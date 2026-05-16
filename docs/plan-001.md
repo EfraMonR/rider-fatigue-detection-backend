@@ -179,10 +179,10 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Validador de password: ≥8 chars + 1 carácter especial.
 
 
-- [~] **2.4** Crear modelo Pydantic `RegisterIn(email: EmailStr, password: str, name: str)`.
+- [x] **2.4** Crear modelo Pydantic `RegisterIn(email: EmailStr, password: str, name: str)`.
 
 
-- [ ] **2.5** Crear `app/api/auth/api_register.py` — `POST /auth/register` (público):
+- [~] **2.5** Crear `app/api/auth/api_register.py` — `POST /auth/register` (público):
  - Unicidad de email → 409 `EMAIL_ALREADY_EXISTS`.
  - Password débil → 400 `WEAK_PASSWORD`.
  - Emitir tokens. Cookie: `Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict; Path=/auth; Max-Age=604800`.
