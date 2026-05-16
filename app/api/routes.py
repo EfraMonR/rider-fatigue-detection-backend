@@ -4,7 +4,7 @@ from app.api.dependencies import get_current_user
 from app.api.auth import api_register, api_login, api_refresh, api_logout
 from app.api.analysis import api_upload, api_manual
 from app.api.alerts import api_send
-from app.api.user import api_contacts
+from app.api.user import api_contacts, api_profile, api_calibrate, api_tags
 from app.api.history import api_summary, api_detail, api_delete
 from app.api.stats import api_trends, api_distribution, api_correlations
 
@@ -21,6 +21,9 @@ protected_router.include_router(api_upload.router)
 protected_router.include_router(api_manual.router)
 protected_router.include_router(api_send.router)
 protected_router.include_router(api_contacts.router)
+protected_router.include_router(api_profile.router)
+protected_router.include_router(api_calibrate.router)
+protected_router.include_router(api_tags.router)
 protected_router.include_router(api_summary.router)
 protected_router.include_router(api_detail.router)
 protected_router.include_router(api_delete.router)

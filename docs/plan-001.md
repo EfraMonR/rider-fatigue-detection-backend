@@ -457,9 +457,9 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 - [x] **5.10** Tags repository (CRUD filtrando por `user_id`).
 
 
-- [ ] **5.11** `GET /user/profile` (protegido).
-- [ ] **5.12** `PUT /user/profile/calibrate` (protegido). 400 si BPM <30 o >220.
-- [ ] **5.13** `GET/POST/DELETE /user/tags` (protegido). 409 si duplicada. 404 si `tag_id` no es del user.
+- [x] **5.11** `GET /user/profile` (protegido).
+- [x] **5.12** `PUT /user/profile/calibrate` (protegido). 400 si BPM <30 o >220.
+- [x] **5.13** `GET/POST/DELETE /user/tags` (protegido). 409 si duplicada. 404 si `tag_id` no es del user.
 
 
 ### 5D — Auditoría (RF-008)
