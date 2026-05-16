@@ -465,7 +465,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 5D — Auditoría (RF-008)
 
 
-- [ ] **5.14** Crear `app/repositories/audit_repository.py`:
+- [x] **5.14** Crear `app/repositories/audit_repository.py`:
  - `log_event(user_id, event_type, model_status, error_message, details)` → `None`.
 
 
