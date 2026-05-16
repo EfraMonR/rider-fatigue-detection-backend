@@ -454,7 +454,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `recalculate_profile_status(user_id)` (regla 5 sesiones / desv <10%).
 
 
-- [ ] **5.10** Tags repository (CRUD filtrando por `user_id`).
+- [x] **5.10** Tags repository (CRUD filtrando por `user_id`).
 
 
 - [ ] **5.11** `GET /user/profile` (protegido).
