@@ -237,13 +237,13 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 3A — Pipeline ETL (RF-011)
 
 
-- [ ] **3.1** Crear `app/utils/validators.py`:
+- [x] **3.1** Crear `app/utils/validators.py`:
  - `validate_bpm(value)` → bool (30–220).
  - `validate_timestamp(value)` → bool (parseable ISO 8601).
  - `validate_csv_filename(name)` → bool (sin path separators).
 
 
-- [ ] **3.2** Crear `app/services/etl_service.py`:
+- [~] **3.2** Crear `app/services/etl_service.py`:
  - Constantes: `APPLE_HEALTH_COLUMNS`, `APPLE_HEALTH_HR_TYPE`, `HR_COLUMN_CANDIDATES`.
  - `detect_format(df)` → `"apple_health" | "simple" | error con `COLUMN_SELECTION_REQUIRED`.
  - `extract_series(df, format)` → `list[tuple[str, float]]`.
