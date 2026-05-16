@@ -202,12 +202,12 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - 401: `REFRESH_TOKEN_INVALID`.
 
 
-- [~] **2.8** Crear `app/api/auth/api_logout.py` — `POST /auth/logout`:
+- [x] **2.8** Crear `app/api/auth/api_logout.py` — `POST /auth/logout`:
  - Revocar refresh token de cookie.
  - Limpiar cookie con `Max-Age=0` y mismas flags.
 
 
-- [ ] **2.9** Crear `app/api/dependencies.py` — `get_current_user()`:
+- [~] **2.9** Crear `app/api/dependencies.py` — `get_current_user()`:
  - Extraer JWT de `Authorization: Bearer <token>`, decodificar, inyectar `user_id`.
  - 401: `TOKEN_EXPIRED` o `TOKEN_INVALID`.
 
