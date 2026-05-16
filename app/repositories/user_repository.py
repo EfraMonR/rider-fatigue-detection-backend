@@ -1,4 +1,7 @@
+import math
+
 from sqlalchemy import text
+
 from app.db.database import get_connection
 
 
@@ -44,3 +47,81 @@ def update_last_login(user_id: str) -> None:
             {"id": user_id},
         )
         conn.commit()
+
+
+# Campos del perfil expuestos al cliente — excluye password_hash y encryption_key
+_PROFILE_FIELDS = (
+    "id", "name", "email", "baseline_bpm", "profile_status",
+    "session_count", "last_stability_check", "last_login", "created_at",
+)
+
+
+def get_profile(user_id: str) -> dict | None:
+    with get_connection() as conn:
+        row = conn.execute(
+            text("SELECT * FROM users WHERE id = :id"),
+            {"id": user_id},
+        ).mappings().first()
+    if row is None:
+        return None
+    return {k: row[k] for k in _PROFILE_FIELDS if k in row}
+
+
+def update_baseline_bpm(user_id: str, bpm: int) -> None:
+    with get_connection() as conn:
+        conn.execute(
+            text("UPDATE users SET baseline_bpm = :bpm WHERE id = :id"),
+            {"bpm": bpm, "id": user_id},
+        )
+        conn.commit()
+
+
+def recalculate_profile_status(user_id: str) -> str:
+    """
+    Regla: new → calibrating en la 1ª sesión; calibrating → stable
+    cuando session_count >= 5 Y stddev(risk_score) < 10.
+    Actualiza la fila y devuelve el nuevo status.
+    """
+    with get_connection() as conn:
+        user_row = conn.execute(
+            text("SELECT session_count, profile_status FROM users WHERE id = :id"),
+            {"id": user_id},
+        ).mappings().first()
+        if user_row is None:
+            return "new"
+
+        count = user_row["session_count"]
+        current = user_row["profile_status"]
+
+        if count == 0:
+            new_status = "new"
+        elif count < 5:
+            new_status = "calibrating"
+        else:
+            # SQLite no tiene STDDEV; calculamos en Python
+            scores = conn.execute(
+                text("SELECT risk_score FROM analysis_sessions WHERE user_id = :uid AND risk_score IS NOT NULL"),
+                {"uid": user_id},
+            ).scalars().all()
+
+            if len(scores) >= 5:
+                mean = sum(scores) / len(scores)
+                variance = sum((s - mean) ** 2 for s in scores) / len(scores)
+                stddev = math.sqrt(variance)
+                new_status = "stable" if stddev < 10 else "calibrating"
+            else:
+                new_status = "calibrating"
+
+        if new_status != current:
+            conn.execute(
+                text("""
+                    UPDATE users
+                    SET profile_status = :status,
+                        last_stability_check = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+                    WHERE id = :id
+                """),
+                {"status": new_status, "id": user_id},
+            )
+            conn.commit()
+
+    return new_status

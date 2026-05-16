@@ -448,7 +448,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 5C — Perfil y Calibración (RF-007)
 
 
-- [ ] **5.9** Ampliar `user_repository.py`:
+- [x] **5.9** Ampliar `user_repository.py`:
  - `update_baseline_bpm(user_id, bpm)` (validar 30–220).
  - `get_profile(user_id)`.
  - `recalculate_profile_status(user_id)` (regla 5 sesiones / desv <10%).
