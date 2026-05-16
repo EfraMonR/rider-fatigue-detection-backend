@@ -157,13 +157,13 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### Tareas
 
 
-- [ ] **2.1** Crear `app/repositories/user_repository.py`:
+- [x] **2.1** Crear `app/repositories/user_repository.py`:
  - `get_user_by_email(email)` → `dict | None`.
  - `create_user(id, name, email, password_hash)` → `dict`.
  - `update_last_login(user_id)` → `None`.
 
 
-- [ ] **2.2** Crear `app/repositories/token_repository.py`:
+- [~] **2.2** Crear `app/repositories/token_repository.py`:
  - `save_refresh_token(user_id, token_hash, expires_at)` → `None`.
  - `get_refresh_token(token_hash)` → `dict | None`.
  - `revoke_refresh_token(token_hash)` → `None`.
