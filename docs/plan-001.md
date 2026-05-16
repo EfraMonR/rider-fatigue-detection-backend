@@ -342,12 +342,12 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 4A — Weather Service (RF-002)
 
 
-- [ ] **4.1** Crear `app/repositories/weather_repository.py`:
+- [x] **4.1** Crear `app/repositories/weather_repository.py`:
  - `get_cached_weather(lat, lon)` → `dict | None`. **Antes de devolver, borra los expirados** (limpieza on-read, sin scheduler).
  - `save_weather(lat, lon, data, ttl_minutes=15)` → `None`.
 
 
-- [ ] **4.2** Crear `app/services/weather_service.py`:
+- [~] **4.2** Crear `app/services/weather_service.py`:
  - Validar `lat ∈ [-90, 90]`, `lon ∈ [-180, 180]` con Pydantic antes de hacer request.
  - `httpx.AsyncClient(timeout=5.0, follow_redirects=False)`.
  - `get_weather(lat, lon)` con caché de 15 min.
