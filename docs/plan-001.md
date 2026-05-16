@@ -419,13 +419,13 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `delete_session(session_id, user_id)`.
 
 
-- [ ] **5.2** `GET /history/summary` (protegido). Query params validados con Pydantic: `page≥1`, `limit∈[1,100]`, `date_from/date_to` ISO 8601.
+- [x] **5.2** `GET /history/summary` (protegido). Query params validados con Pydantic: `page≥1`, `limit∈[1,100]`, `date_from/date_to` ISO 8601.
 
 
-- [ ] **5.3** `GET /history/{id}` (protegido). `?raw_data=true` descifra biométricos con `BIOMETRIC_KEY`. 404 si no existe o es de otro user.
+- [x] **5.3** `GET /history/{id}` (protegido). `?raw_data=true` descifra biométricos con `BIOMETRIC_KEY`. 404 si no existe o es de otro user.
 
 
-- [ ] **5.4** `DELETE /history/{id}` (protegido). 404 si no pertenece al user.
+- [x] **5.4** `DELETE /history/{id}` (protegido). 404 si no pertenece al user.
 
 
 ### 5B — Stats para Gráficas (RF-006)
