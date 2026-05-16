@@ -170,7 +170,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `revoke_all_user_tokens(user_id)` → `None`.
 
 
-- [~] **2.3** Crear `app/services/auth_service.py`:
+- [x] **2.3** Crear `app/services/auth_service.py`:
  - `hash_password(plain)` → bcrypt cost=12.
  - `verify_password(plain, hashed)` → bool.
  - `create_access_token(user_id)` → JWT HS256, exp 1h.
@@ -179,7 +179,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Validador de password: ≥8 chars + 1 carácter especial.
 
 
-- [ ] **2.4** Crear modelo Pydantic `RegisterIn(email: EmailStr, password: str, name: str)`.
+- [~] **2.4** Crear modelo Pydantic `RegisterIn(email: EmailStr, password: str, name: str)`.
 
 
 - [ ] **2.5** Crear `app/api/auth/api_register.py` — `POST /auth/register` (público):
