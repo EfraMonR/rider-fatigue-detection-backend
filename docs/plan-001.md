@@ -114,11 +114,11 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### Tareas
 
 
-- [ ] **1.1** Crear estructura de carpetas según `spec-001-back-technical.md §2.3`:
+- [x] **1.1** Crear estructura de carpetas según `spec-001-back-technical.md §2.3`:
  ```
  app/ api/ services/ repositories/ models_ai/ db/ utils/
  ```
-- [ ] **1.2** Crear `requirements.txt`:
+- [~] **1.2** Crear `requirements.txt`:
  - `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `pydantic-settings`, `pydantic[email]`
  - `bcrypt`, `python-jose[cryptography]`, `cryptography` (AES-GCM)
  - `scikit-learn`, `pandas`, `numpy`
