@@ -115,16 +115,3 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 CREATE INDEX IF NOT EXISTS idx_audit_user      ON audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_logs(timestamp);
 CREATE INDEX IF NOT EXISTS idx_audit_event     ON audit_logs(event_type);
-
--- ─────────────────────────────────────────
--- TABLE: tags
--- ─────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS tags (
-    id         TEXT    PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-    user_id    TEXT    NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name       TEXT    NOT NULL,
-    created_at TEXT    NOT NULL
-               DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-    UNIQUE(user_id, name)
-);
-CREATE INDEX IF NOT EXISTS idx_tags_user ON tags(user_id);
