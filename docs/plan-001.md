@@ -318,7 +318,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  > **Nota arquitectónica:** los archivos que superen los límites los procesa el frontend (spec-002) con `.tflite`. La sincronización offline→backend del resultado está en Backlog.
 
 
-- [~] **3.10** Crear `app/api/analysis/api_manual.py` — `POST /analysis/manual-input` (protegido). Mismo flujo que 3.9, sin parseo de archivo. Tope de puntos en JSON: 5.000 (consistente con CSV).
+- [x] **3.10** Crear `app/api/analysis/api_manual.py` — `POST /analysis/manual-input` (protegido). Mismo flujo que 3.9, sin parseo de archivo. Tope de puntos en JSON: 5.000 (consistente con CSV).
 
 
 ### Criterio de Done
