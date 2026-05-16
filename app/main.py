@@ -1,12 +1,12 @@
 from pathlib import Path
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 
 from app.db.database import engine
 from app.api.health import router as health_router
 from app.api.routes import public_router, protected_router
+from app.api.error_handlers import register_handlers
 from app.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -35,12 +35,5 @@ app.include_router(health_router)        # GET /health (público)
 app.include_router(public_router)        # /auth/register, /auth/login
 app.include_router(protected_router)     # /auth/refresh, /auth/logout + resto de fases
 
-
-# ── Global error handler (full implementation: task 5.16) ────────────────────
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    logger.error("Unhandled exception: %s %s — %s", request.method, request.url.path, type(exc).__name__)
-    return JSONResponse(
-        status_code=500,
-        content={"error_code": "INTERNAL_ERROR", "message": "Error interno del servidor."},
-    )
+# ── Error handlers (RF-009) ──────────────────────────────────────────────────
+register_handlers(app)

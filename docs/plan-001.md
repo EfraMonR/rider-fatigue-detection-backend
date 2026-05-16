@@ -479,7 +479,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 5E — Manejo de Errores Humanos (RF-009)
 
 
-- [ ] **5.16** Crear `app/api/error_handlers.py` con handler global FastAPI, registrarlo en `main.py` y verificar que todos los endpoints devuelven `{error_code, message}` sin stack trace. Mapeos:
+- [x] **5.16** Crear `app/api/error_handlers.py` con handler global FastAPI, registrarlo en `main.py` y verificar que todos los endpoints devuelven `{error_code, message}` sin stack trace. Mapeos:
  - `FileNotFoundError` → 400 `FILE_NOT_FOUND`.
  - `OperationalError` (DB lock) → 503 `DATABASE_BUSY`.
  - `httpx.TimeoutException` → 504 `UPSTREAM_TIMEOUT`.
