@@ -438,9 +438,9 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Usar índices `idx_sessions_user_id` y `idx_sessions_timestamp` ya en schema.
 
 
-- [ ] **5.6** `GET /stats/trends?period=week|month` (protegido).
-- [ ] **5.7** `GET /stats/distribution` (protegido).
-- [ ] **5.8** `GET /stats/correlations` (protegido).
+- [x] **5.6** `GET /stats/trends?period=week|month` (protegido).
+- [x] **5.7** `GET /stats/distribution` (protegido).
+- [x] **5.8** `GET /stats/correlations` (protegido).
  - Todos < 200ms (RNF-001), paginados a 10 puntos.
  - Datos insuficientes (<2 puntos): JSON vacío + mensaje.
 

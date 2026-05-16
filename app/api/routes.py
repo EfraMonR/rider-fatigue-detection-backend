@@ -6,6 +6,7 @@ from app.api.analysis import api_upload, api_manual
 from app.api.alerts import api_send
 from app.api.user import api_contacts
 from app.api.history import api_summary, api_detail, api_delete
+from app.api.stats import api_trends, api_distribution, api_correlations
 
 # Router público — solo health, register y login
 public_router = APIRouter()
@@ -23,3 +24,6 @@ protected_router.include_router(api_contacts.router)
 protected_router.include_router(api_summary.router)
 protected_router.include_router(api_detail.router)
 protected_router.include_router(api_delete.router)
+protected_router.include_router(api_trends.router)
+protected_router.include_router(api_distribution.router)
+protected_router.include_router(api_correlations.router)
