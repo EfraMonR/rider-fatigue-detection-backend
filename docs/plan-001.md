@@ -304,7 +304,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Si falla: `audit_logs.log_event("upload", "Error", message=...)` y propagar excepción al handler global.
 
 
-- [~] **3.9** Crear `app/api/analysis/api_upload.py` — `POST /analysis/upload-file` (protegido):
+- [x] **3.9** Crear `app/api/analysis/api_upload.py` — `POST /analysis/upload-file` (protegido):
  - **Validar antes de leer en memoria** (orden importante):
    - `Content-Length` > `MAX_UPLOAD_SIZE_MB * 1024 * 1024` (default 2MB) → 413 `FILE_TOO_LARGE`.
    - `content_type` ∉ `{"text/csv", "application/json"}` → 415 `UNSUPPORTED_MEDIA_TYPE`.
@@ -318,7 +318,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  > **Nota arquitectónica:** los archivos que superen los límites los procesa el frontend (spec-002) con `.tflite`. La sincronización offline→backend del resultado está en Backlog.
 
 
-- [ ] **3.10** Crear `app/api/analysis/api_manual.py` — `POST /analysis/manual-input` (protegido). Mismo flujo que 3.9, sin parseo de archivo. Tope de puntos en JSON: 5.000 (consistente con CSV).
+- [~] **3.10** Crear `app/api/analysis/api_manual.py` — `POST /analysis/manual-input` (protegido). Mismo flujo que 3.9, sin parseo de archivo. Tope de puntos en JSON: 5.000 (consistente con CSV).
 
 
 ### Criterio de Done
