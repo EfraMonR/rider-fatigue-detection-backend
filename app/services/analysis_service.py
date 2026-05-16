@@ -1,18 +1,11 @@
 from app.config import settings
 from app.models_ai import inference_engine
-from app.repositories import biometric_repository, session_repository
+from app.repositories import audit_repository, biometric_repository, session_repository
 from app.services import weather_service
 from app.utils.logging import get_logger
 
 logger = get_logger(__name__)
-
-# Importación lazy de audit_repository (se crea en Fase 5D)
-_audit_available = False
-try:
-    from app.repositories import audit_repository
-    _audit_available = True
-except ImportError:
-    pass
+_audit_available = True
 
 
 def _determine_traffic_light(stress_level: str, bpm_mean: float, baseline_bpm: int) -> tuple[str, str]:
@@ -48,7 +41,8 @@ async def process(
     try:
         inference_result = inference_engine.run_inference(series)
     except Exception as exc:
-        _log_event(user_id, "upload", "Error", str(type(exc).__name__))
+        # model_failure: evento específico requerido por RF-008
+        _log_event(user_id, "model_failure", "Error", str(type(exc).__name__))
         raise
 
     stress_level = inference_result["stress_level"]

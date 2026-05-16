@@ -469,7 +469,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `log_event(user_id, event_type, model_status, error_message, details)` → `None`.
 
 
-- [ ] **5.15** Llamar `log_event()` en los 4 eventos que pide RF-008:
+- [x] **5.15** Llamar `log_event()` en los 4 eventos que pide RF-008:
  - `upload` (Success / Fallback / Error).
  - `login` (incluye fallos).
  - `alert_sent` (Success / Error).

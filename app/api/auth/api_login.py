@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response
 
 from app.api.auth.schemas import LoginIn
-from app.repositories import user_repository, token_repository
+from app.repositories import audit_repository, user_repository, token_repository
 from app.services import auth_service
 from app.utils.logging import get_logger
 
@@ -21,6 +21,12 @@ def login(body: LoginIn, response: Response):
 
     # Mensaje uniforme — no diferencia email inexistente vs password incorrecta (anti-enumeración)
     if not user or not auth_service.verify_password(body.password, user["password_hash"]):
+        # user_id puede ser None si el email no existe
+        audit_repository.log_event(
+            user_id=user["id"] if user else None,
+            event_type="login",
+            error_message="INVALID_CREDENTIALS",
+        )
         raise _INVALID_CREDENTIALS
 
     user_id = user["id"]
@@ -42,6 +48,7 @@ def login(body: LoginIn, response: Response):
         max_age=_REFRESH_COOKIE_MAX_AGE,
     )
 
+    audit_repository.log_event(user_id=user_id, event_type="login", model_status="Success")
     logger.info("Login successful user_id=%s", user_id)
 
     return {

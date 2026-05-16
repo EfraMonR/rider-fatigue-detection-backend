@@ -3,18 +3,11 @@ import json
 import httpx
 
 from app.config import settings
-from app.repositories import contact_repository, session_repository
+from app.repositories import audit_repository, contact_repository, session_repository
 from app.utils.logging import get_logger
 
 logger = get_logger(__name__)
-
-# Importación lazy de audit_repository (se crea en Fase 5D)
-_audit_available = False
-try:
-    from app.repositories import audit_repository
-    _audit_available = True
-except ImportError:
-    pass
+_audit_available = True
 
 
 async def send_alert(user_id: str, session_id: str, contact_ids: list[str] | None = None) -> dict:
