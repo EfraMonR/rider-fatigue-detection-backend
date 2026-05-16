@@ -189,13 +189,13 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - 201: `{access_token, token_type, profile_status, session_count}`.
 
 
-- [~] **2.6** Crear `app/api/auth/api_login.py` — `POST /auth/login` (público):
+- [x] **2.6** Crear `app/api/auth/api_login.py` — `POST /auth/login` (público):
  - Buscar usuario, verificar bcrypt. Mensaje **uniforme** en error (no diferenciar email-no-existe vs password-mala).
  - Revocar tokens previos del usuario, emitir nuevos.
  - 401: `INVALID_CREDENTIALS`.
 
 
-- [ ] **2.7** Crear `app/api/auth/api_refresh.py` — `POST /auth/refresh`:
+- [~] **2.7** Crear `app/api/auth/api_refresh.py` — `POST /auth/refresh`:
  - Leer refresh token de cookie httpOnly.
  - Verificar en BD: hash existe, no expirado, no revocado.
  - Rotar (revocar actual, emitir nuevo par).
