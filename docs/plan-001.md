@@ -278,12 +278,12 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  > **Nota:** la columna `processing_status` del schema permanece. En MVP siempre se inserta con `processing_status='completed'` (pasarlo explícito en el INSERT para no quedar en el default `'processing'` del DDL). Si el análisis falla, no se guarda fila — se devuelve error al cliente y se loguea en `audit_logs` (RF-008).
 
 
-- [~] **3.6** Crear `app/repositories/biometric_repository.py`:
+- [x] **3.6** Crear `app/repositories/biometric_repository.py`:
  - `save_biometric_series(session_id, series)` → cifra cada BPM con `BIOMETRIC_KEY` antes de insertar.
  - `get_biometric_series(session_id, user_id)` → verifica ownership (join con `analysis_sessions.user_id`) y descifra.
 
 
-- [ ] **3.7** Crear `app/utils/encryption.py` (AES-256-GCM):
+- [x] **3.7** Crear `app/utils/encryption.py` (AES-256-GCM):
  - Lee `BIOMETRIC_KEY` del config una sola vez al importar.
  - `encrypt_bpm(bpm: float)` → `(ciphertext_b64, nonce_b64)`. Nonce aleatorio de 96 bits por llamada (`os.urandom(12)`).
  - `decrypt_bpm(ciphertext_b64, nonce_b64)` → `float`. Si `InvalidTag` → propaga (handler global lo mapea a `DATA_INTEGRITY_ERROR` + audit log).
@@ -292,7 +292,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 3D — Orquestación y endpoints
 
 
-- [ ] **3.8** Crear `app/services/analysis_service.py`:
+- [~] **3.8** Crear `app/services/analysis_service.py`:
  - `process(user_id, series, lat=None, lon=None)` → `dict`:
    1. Inferencia (`inference_engine`).
    2. Aplicar `baseline_bpm` post-inferencia → ajustar `traffic_light`.
