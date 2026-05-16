@@ -363,7 +363,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 4B — Alertas (RF-004)
 
 
-- [~] **4.4** Crear `app/repositories/contact_repository.py`. Todas las funciones reciben `user_id` y filtran por él:
+- [x] **4.4** Crear `app/repositories/contact_repository.py`. Todas las funciones reciben `user_id` y filtran por él:
  - `get_contacts_by_user(user_id)`.
  - `get_contact_by_id(contact_id, user_id)`.
  - `create_contact(user_id, name, email, phone)`.
@@ -371,7 +371,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `delete_contact(contact_id, user_id)`.
 
 
-- [ ] **4.5** Crear `app/services/alerts_service.py`:
+- [~] **4.5** Crear `app/services/alerts_service.py`:
  - `send_alert(user_id, session_id, contact_ids=[])`.
  - Construir email con `traffic_light`, `stress_level`, `weather_impact`. Sin BPMs crudos.
  - Enviar vía SendGrid (free tier: 100 emails/día).
