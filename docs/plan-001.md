@@ -243,7 +243,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `validate_csv_filename(name)` → bool (sin path separators).
 
 
-- [~] **3.2** Crear `app/services/etl_service.py`:
+- [x] **3.2** Crear `app/services/etl_service.py`:
  - Constantes: `APPLE_HEALTH_COLUMNS`, `APPLE_HEALTH_HR_TYPE`, `HR_COLUMN_CANDIDATES`.
  - `detect_format(df)` → `"apple_health" | "simple" | error con `COLUMN_SELECTION_REQUIRED`.
  - `extract_series(df, format)` → `list[tuple[str, float]]`.
@@ -255,7 +255,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 3B — Modelo de IA (RF-001)
 
 
-- [ ] **3.3** Crear `app/models_ai/model_loader.py`:
+- [~] **3.3** Crear `app/models_ai/model_loader.py`:
  - Cargar `modelo.pkl` desde `MODEL_PATH` una sola vez al arrancar.
  - Si no existe: log + `ModelNotAvailableError`.
 
