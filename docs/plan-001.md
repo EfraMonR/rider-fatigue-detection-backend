@@ -195,14 +195,14 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - 401: `INVALID_CREDENTIALS`.
 
 
-- [~] **2.7** Crear `app/api/auth/api_refresh.py` — `POST /auth/refresh`:
+- [x] **2.7** Crear `app/api/auth/api_refresh.py` — `POST /auth/refresh`:
  - Leer refresh token de cookie httpOnly.
  - Verificar en BD: hash existe, no expirado, no revocado.
  - Rotar (revocar actual, emitir nuevo par).
  - 401: `REFRESH_TOKEN_INVALID`.
 
 
-- [ ] **2.8** Crear `app/api/auth/api_logout.py` — `POST /auth/logout`:
+- [~] **2.8** Crear `app/api/auth/api_logout.py` — `POST /auth/logout`:
  - Revocar refresh token de cookie.
  - Limpiar cookie con `Max-Age=0` y mismas flags.
 
