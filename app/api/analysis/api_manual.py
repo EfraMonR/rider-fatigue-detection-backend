@@ -37,7 +37,7 @@ class ManualInputIn(BaseModel):
 
 
 @router.post("/analysis/manual-input")
-def manual_input(
+async def manual_input(
     body: ManualInputIn,
     current_user: dict = Depends(get_current_user),
 ):
@@ -60,7 +60,7 @@ def manual_input(
     series = [{"timestamp": p.timestamp, "bpm": p.bpm} for p in body.series]
 
     try:
-        result = analysis_service.process(user_id=user_id, series=series, lat=body.lat, lon=body.lon)
+        result = await analysis_service.process(user_id=user_id, series=series, lat=body.lat, lon=body.lon)
     except ModelNotAvailableError:
         raise HTTPException(
             status_code=503,

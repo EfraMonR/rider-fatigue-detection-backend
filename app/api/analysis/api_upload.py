@@ -78,9 +78,9 @@ async def upload_file(
                     "message": "Archivo excede el límite de procesamiento online. Procesar localmente en la app."},
         )
 
-    # 7) Análisis síncrono — sin BackgroundTasks
+    # 7) Análisis — sin BackgroundTasks
     try:
-        result = analysis_service.process(user_id=user_id, series=series, lat=lat, lon=lon)
+        result = await analysis_service.process(user_id=user_id, series=series, lat=lat, lon=lon)
     except ModelNotAvailableError:
         raise HTTPException(
             status_code=503,

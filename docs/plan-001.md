@@ -355,7 +355,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Fallback si la API falla: último caché disponible + `warning: true`.
 
 
-- [~] **4.3** Integrar en `analysis_service.process()`:
+- [x] **4.3** Integrar en `analysis_service.process()`:
  - `lat`, `lon` opcionales en el request (ya están en la firma desde 3.8).
  - Adjuntar `weather_impact` antes de persistir; `null` si clima normal o sin coordenadas.
 
@@ -363,7 +363,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 4B — Alertas (RF-004)
 
 
-- [ ] **4.4** Crear `app/repositories/contact_repository.py`. Todas las funciones reciben `user_id` y filtran por él:
+- [~] **4.4** Crear `app/repositories/contact_repository.py`. Todas las funciones reciben `user_id` y filtran por él:
  - `get_contacts_by_user(user_id)`.
  - `get_contact_by_id(contact_id, user_id)`.
  - `create_contact(user_id, name, email, phone)`.

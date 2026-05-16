@@ -1,6 +1,7 @@
 from app.config import settings
 from app.models_ai import inference_engine
 from app.repositories import biometric_repository, session_repository
+from app.services import weather_service
 from app.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -29,7 +30,7 @@ def _determine_traffic_light(stress_level: str, bpm_mean: float, baseline_bpm: i
     return "Green", "Fit"
 
 
-def process(
+async def process(
     user_id: str,
     series: list[dict],
     baseline_bpm: int | None = None,
@@ -37,8 +38,8 @@ def process(
     lon: float | None = None,
 ) -> dict:
     """
-    Orquesta: inferencia → traffic_light → persistencia → audit log.
-    No usa BackgroundTasks. Procesamiento síncrono.
+    Orquesta: inferencia → traffic_light → weather_impact → persistencia → audit log.
+    No usa BackgroundTasks. Procesamiento síncrono (async solo por weather HTTP call).
     """
     bpms = [row["bpm"] for row in series]
     bpm_mean = sum(bpms) / len(bpms)
@@ -54,9 +55,16 @@ def process(
     confidence_score = inference_result["confidence_score"]
     traffic_light, verdict = _determine_traffic_light(stress_level, bpm_mean, effective_baseline)
 
-    # weather_impact se integra en Fase 4A; por ahora es null
-    weather_impact = None
+    # Weather enrichment — no modifica el semáforo, solo contextualiza
     weather_snapshot: dict = {}
+    weather_impact = None
+    if lat is not None and lon is not None:
+        try:
+            weather_data = await weather_service.get_weather(lat, lon)
+            weather_snapshot = weather_data
+            weather_impact = weather_service.generate_weather_impact(weather_data)
+        except Exception as exc:
+            logger.error("Weather enrichment failed: %s", type(exc).__name__)
 
     risk_score = round(confidence_score * 100, 1) if stress_level == "High" else round(confidence_score * 50, 1)
 
