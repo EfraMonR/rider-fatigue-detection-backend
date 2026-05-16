@@ -128,8 +128,8 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 - [x] **1.4** Crear `app/config.py` con `pydantic-settings` y validators al startup:
  - `JWT_SECRET_KEY` longitud ≥ 32 → si no, `ValueError`.
  - `BIOMETRIC_KEY` decodificable base64 y exactamente 32 bytes → si no, `ValueError`.
-- [~] **1.5** Crear `app/db/schema.sql` con DDL del §3.6 técnico (las 7 tablas, todas con `CREATE TABLE IF NOT EXISTS`).
-- [ ] **1.6** Crear `app/db/database.py` — engine SQLAlchemy Core + `get_connection()` (`check_same_thread=False`).
+- [x] **1.5** Crear `app/db/schema.sql` con DDL del §3.6 técnico (las 7 tablas, todas con `CREATE TABLE IF NOT EXISTS`).
+- [~] **1.6** Crear `app/db/database.py` — engine SQLAlchemy Core + `get_connection()` (`check_same_thread=False`).
 - [ ] **1.7** Crear `app/utils/logging.py` — logger estándar de Python a stdout, formato `[level] timestamp message` (la regla anti-sensitive-data está en "Convenciones del código").
 - [ ] **1.8** Crear `app/main.py`:
  - `startup`: ejecutar `schema.sql` (idempotente).
