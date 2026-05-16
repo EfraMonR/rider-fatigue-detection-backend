@@ -347,7 +347,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `save_weather(lat, lon, data, ttl_minutes=15)` → `None`.
 
 
-- [~] **4.2** Crear `app/services/weather_service.py`:
+- [x] **4.2** Crear `app/services/weather_service.py`:
  - Validar `lat ∈ [-90, 90]`, `lon ∈ [-180, 180]` con Pydantic antes de hacer request.
  - `httpx.AsyncClient(timeout=5.0, follow_redirects=False)`.
  - `get_weather(lat, lon)` con caché de 15 min.
@@ -355,7 +355,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Fallback si la API falla: último caché disponible + `warning: true`.
 
 
-- [ ] **4.3** Integrar en `analysis_service.process()`:
+- [~] **4.3** Integrar en `analysis_service.process()`:
  - `lat`, `lon` opcionales en el request (ya están en la firma desde 3.8).
  - Adjuntar `weather_impact` antes de persistir; `null` si clima normal o sin coordenadas.
 
