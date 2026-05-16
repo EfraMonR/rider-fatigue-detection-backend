@@ -270,7 +270,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 3C — Repositorios y cifrado
 
 
-- [~] **3.5** Crear `app/repositories/session_repository.py`. Toda función que reciba `session_id` recibe también `user_id` y filtra por él:
+- [x] **3.5** Crear `app/repositories/session_repository.py`. Toda función que reciba `session_id` recibe también `user_id` y filtra por él:
  - `create_session(user_id, result_dict)` → `session_id`. Inserta la sesión solo cuando el análisis fue exitoso (insert directo en estado `completed`).
  - `get_session_by_id(session_id, user_id)` → `dict | None`.
 
@@ -278,7 +278,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  > **Nota:** la columna `processing_status` del schema permanece. En MVP siempre se inserta con `processing_status='completed'` (pasarlo explícito en el INSERT para no quedar en el default `'processing'` del DDL). Si el análisis falla, no se guarda fila — se devuelve error al cliente y se loguea en `audit_logs` (RF-008).
 
 
-- [ ] **3.6** Crear `app/repositories/biometric_repository.py`:
+- [~] **3.6** Crear `app/repositories/biometric_repository.py`:
  - `save_biometric_series(session_id, series)` → cifra cada BPM con `BIOMETRIC_KEY` antes de insertar.
  - `get_biometric_series(session_id, user_id)` → verifica ownership (join con `analysis_sessions.user_id`) y descifra.
 
