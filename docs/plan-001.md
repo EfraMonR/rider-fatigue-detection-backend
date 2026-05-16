@@ -163,14 +163,14 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `update_last_login(user_id)` → `None`.
 
 
-- [~] **2.2** Crear `app/repositories/token_repository.py`:
+- [x] **2.2** Crear `app/repositories/token_repository.py`:
  - `save_refresh_token(user_id, token_hash, expires_at)` → `None`.
  - `get_refresh_token(token_hash)` → `dict | None`.
  - `revoke_refresh_token(token_hash)` → `None`.
  - `revoke_all_user_tokens(user_id)` → `None`.
 
 
-- [ ] **2.3** Crear `app/services/auth_service.py`:
+- [~] **2.3** Crear `app/services/auth_service.py`:
  - `hash_password(plain)` → bcrypt cost=12.
  - `verify_password(plain, hashed)` → bool.
  - `create_access_token(user_id)` → JWT HS256, exp 1h.
