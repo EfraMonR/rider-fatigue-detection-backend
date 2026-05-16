@@ -35,6 +35,20 @@ class ManualInputIn(BaseModel):
     lat: float | None = None
     lon: float | None = None
 
+    @field_validator("lat")
+    @classmethod
+    def lat_range(cls, v: float | None) -> float | None:
+        if v is not None and not -90 <= v <= 90:
+            raise ValueError("lat debe estar en [-90, 90]")
+        return v
+
+    @field_validator("lon")
+    @classmethod
+    def lon_range(cls, v: float | None) -> float | None:
+        if v is not None and not -180 <= v <= 180:
+            raise ValueError("lon debe estar en [-180, 180]")
+        return v
+
 
 @router.post("/analysis/manual-input")
 async def manual_input(

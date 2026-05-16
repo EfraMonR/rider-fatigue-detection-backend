@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
+from typing import Annotated
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFile
 
 from app.api.dependencies import get_current_user
 from app.config import settings
@@ -17,8 +18,8 @@ _MAX_ROWS = 5000
 async def upload_file(
     request: Request,
     file: UploadFile,
-    lat: float | None = None,
-    lon: float | None = None,
+    lat: Annotated[float | None, Query(ge=-90, le=90)] = None,
+    lon: Annotated[float | None, Query(ge=-180, le=180)] = None,
     current_user: dict = Depends(get_current_user),
 ):
     user_id = current_user["user_id"]
