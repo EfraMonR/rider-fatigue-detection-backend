@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 
 from app.db.database import engine
 from app.api.health import router as health_router
+from app.api.routes import public_router, protected_router
 from app.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -29,8 +30,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Seguridad Vial API", lifespan=lifespan)
 
-# ── Public routes ────────────────────────────────────────────────────────────
-app.include_router(health_router)
+# ── Routes ───────────────────────────────────────────────────────────────────
+app.include_router(health_router)        # GET /health (público)
+app.include_router(public_router)        # /auth/register, /auth/login
+app.include_router(protected_router)     # /auth/refresh, /auth/logout + resto de fases
 
 
 # ── Global error handler (full implementation: task 5.16) ────────────────────
