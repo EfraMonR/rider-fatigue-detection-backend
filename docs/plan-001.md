@@ -371,7 +371,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `delete_contact(contact_id, user_id)`.
 
 
-- [~] **4.5** Crear `app/services/alerts_service.py`:
+- [x] **4.5** Crear `app/services/alerts_service.py`:
  - `send_alert(user_id, session_id, contact_ids=[])`.
  - Construir email con `traffic_light`, `stress_level`, `weather_impact`. Sin BPMs crudos.
  - Enviar vía SendGrid (free tier: 100 emails/día).
@@ -384,7 +384,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  > - El código del servicio es el **mismo en ambos casos** — solo cambian variables de entorno.
 
 
-- [ ] **4.6** Crear `app/api/alerts/api_send.py` — `POST /alerts/send` (protegido):
+- [~] **4.6** Crear `app/api/alerts/api_send.py` — `POST /alerts/send` (protegido):
  - Validar que `session_id` y cada `contact_id` pertenecen al `user_id` del token.
  - 400 `NO_CONTACTS_FOUND` · 503 `ALERT_SERVICE_UNAVAILABLE` · 202 si encolado.
 
