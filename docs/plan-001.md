@@ -260,7 +260,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Si no existe: log + `ModelNotAvailableError`.
 
 
-- [~] **3.4** Crear `app/models_ai/inference_engine.py`:
+- [x] **3.4** Crear `app/models_ai/inference_engine.py`:
  - Input: `series: list[tuple[str, float]]`.
  - Features: `bpm_mean`, `bpm_std`, `bpm_p25`, `bpm_p75`, `bpm_max`.
  - Escalar con `KMEANS_SCALER_MEAN`/`STD` de `.env`.
@@ -270,7 +270,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 3C — Repositorios y cifrado
 
 
-- [ ] **3.5** Crear `app/repositories/session_repository.py`. Toda función que reciba `session_id` recibe también `user_id` y filtra por él:
+- [~] **3.5** Crear `app/repositories/session_repository.py`. Toda función que reciba `session_id` recibe también `user_id` y filtra por él:
  - `create_session(user_id, result_dict)` → `session_id`. Inserta la sesión solo cuando el análisis fue exitoso (insert directo en estado `completed`).
  - `get_session_by_id(session_id, user_id)` → `dict | None`.
 
