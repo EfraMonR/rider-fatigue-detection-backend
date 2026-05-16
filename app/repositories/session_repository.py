@@ -150,3 +150,104 @@ def delete_session(session_id: str, user_id: str) -> bool:
         )
         conn.commit()
     return result.rowcount > 0
+
+
+# ── Stats (RF-006) ────────────────────────────────────────────────────────────
+
+_VALID_PERIODS = frozenset({"week", "month"})
+
+
+def get_trends(user_id: str, period: str) -> dict:
+    """
+    Devuelve hasta 10 puntos diarios agrupados por fecha.
+    period='week' → últimos 7 días; period='month' → últimos 30 días.
+    """
+    if period not in _VALID_PERIODS:
+        period = "week"
+
+    days = 7 if period == "week" else 30
+
+    with get_connection() as conn:
+        rows = conn.execute(
+            text("""
+                SELECT
+                    strftime('%Y-%m-%d', timestamp) AS date,
+                    COUNT(*)                         AS session_count,
+                    ROUND(AVG(risk_score), 2)        AS avg_risk_score,
+                    SUM(CASE WHEN stress_level = 'Low'      THEN 1 ELSE 0 END) AS low_count,
+                    SUM(CASE WHEN stress_level = 'Moderate' THEN 1 ELSE 0 END) AS moderate_count,
+                    SUM(CASE WHEN stress_level = 'High'     THEN 1 ELSE 0 END) AS high_count
+                FROM analysis_sessions
+                WHERE user_id = :user_id
+                  AND timestamp >= datetime('now', :offset)
+                GROUP BY strftime('%Y-%m-%d', timestamp)
+                ORDER BY date DESC
+                LIMIT 10
+            """),
+            {"user_id": user_id, "offset": f"-{days} days"},
+        ).mappings().all()
+
+    return {"period": period, "points": [dict(r) for r in rows]}
+
+
+def get_distribution(user_id: str) -> dict:
+    """Distribución porcentual de traffic_light para todas las sesiones del usuario."""
+    with get_connection() as conn:
+        rows = conn.execute(
+            text("""
+                SELECT traffic_light, COUNT(*) AS count
+                FROM analysis_sessions
+                WHERE user_id = :user_id
+                GROUP BY traffic_light
+            """),
+            {"user_id": user_id},
+        ).mappings().all()
+
+    total = sum(r["count"] for r in rows)
+    if total == 0:
+        return {"total": 0, "distribution": []}
+
+    distribution = [
+        {
+            "traffic_light": r["traffic_light"],
+            "count": r["count"],
+            "percentage": round(r["count"] / total * 100, 1),
+        }
+        for r in rows
+    ]
+    return {"total": total, "distribution": distribution}
+
+
+def get_correlations(user_id: str) -> dict:
+    """
+    Agrupa por severidad de weather_impact y muestra promedio de riesgo
+    y conteo por semáforo. Hasta 10 puntos.
+    """
+    with get_connection() as conn:
+        total = conn.execute(
+            text("SELECT COUNT(*) FROM analysis_sessions WHERE user_id = :user_id"),
+            {"user_id": user_id},
+        ).scalar()
+
+        if total < 2:
+            return {"sufficient_data": False, "message": "Se necesitan al menos 2 sesiones.", "points": []}
+
+        rows = conn.execute(
+            text("""
+                SELECT
+                    COALESCE(json_extract(weather_impact, '$.severity'), 'none') AS weather_severity,
+                    COUNT(*)                                                       AS session_count,
+                    ROUND(AVG(risk_score), 2)                                     AS avg_risk_score,
+                    SUM(CASE WHEN traffic_light = 'Green'  THEN 1 ELSE 0 END)    AS green_count,
+                    SUM(CASE WHEN traffic_light = 'Yellow' THEN 1 ELSE 0 END)    AS yellow_count,
+                    SUM(CASE WHEN traffic_light = 'Red'    THEN 1 ELSE 0 END)    AS red_count
+                FROM analysis_sessions
+                WHERE user_id = :user_id
+                GROUP BY weather_severity
+                ORDER BY session_count DESC
+                LIMIT 10
+            """),
+            {"user_id": user_id},
+        ).mappings().all()
+
+    return {"sufficient_data": True, "points": [dict(r) for r in rows]}

@@ -431,7 +431,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 5B — Stats para Gráficas (RF-006)
 
 
-- [ ] **5.5** Queries en `session_repository.py` (todas con `user_id`):
+- [x] **5.5** Queries en `session_repository.py` (todas con `user_id`):
  - `get_trends(user_id, period)`.
  - `get_distribution(user_id)`.
  - `get_correlations(user_id)`.
