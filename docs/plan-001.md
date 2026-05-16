@@ -131,11 +131,11 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 - [x] **1.5** Crear `app/db/schema.sql` con DDL del §3.6 técnico (las 7 tablas, todas con `CREATE TABLE IF NOT EXISTS`).
 - [x] **1.6** Crear `app/db/database.py` — engine SQLAlchemy Core + `get_connection()` (`check_same_thread=False`).
 - [x] **1.7** Crear `app/utils/logging.py` — logger estándar de Python a stdout, formato `[level] timestamp message` (la regla anti-sensitive-data está en "Convenciones del código").
-- [~] **1.8** Crear `app/main.py`:
+- [x] **1.8** Crear `app/main.py`:
  - `startup`: ejecutar `schema.sql` (idempotente).
  - Registrar router central + handler global de errores (5.16).
-- [ ] **1.9** Crear `app/api/health.py` — `GET /health` → `{"status": "ok"}` (público).
-- [ ] **1.10** Crear `Dockerfile` con usuario no-root y `HEALTHCHECK CMD curl -f http://localhost:8000/health || exit 1`.
+- [x] **1.9** Crear `app/api/health.py` — `GET /health` → `{"status": "ok"}` (público).
+- [~] **1.10** Crear `Dockerfile` con usuario no-root y `HEALTHCHECK CMD curl -f http://localhost:8000/health || exit 1`.
 - [ ] **1.11** Crear `docker-compose.yml` con volumen `./data:/app/data` y `restart: unless-stopped`.
 - [ ] **1.12** Verificar: `docker compose up` → `GET /health` devuelve 200, `data/segvial.db` con las 7 tablas.
 
