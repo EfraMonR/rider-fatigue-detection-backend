@@ -182,14 +182,14 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 - [x] **2.4** Crear modelo Pydantic `RegisterIn(email: EmailStr, password: str, name: str)`.
 
 
-- [~] **2.5** Crear `app/api/auth/api_register.py` — `POST /auth/register` (público):
+- [x] **2.5** Crear `app/api/auth/api_register.py` — `POST /auth/register` (público):
  - Unicidad de email → 409 `EMAIL_ALREADY_EXISTS`.
  - Password débil → 400 `WEAK_PASSWORD`.
  - Emitir tokens. Cookie: `Set-Cookie: refresh_token=...; HttpOnly; Secure; SameSite=Strict; Path=/auth; Max-Age=604800`.
  - 201: `{access_token, token_type, profile_status, session_count}`.
 
 
-- [ ] **2.6** Crear `app/api/auth/api_login.py` — `POST /auth/login` (público):
+- [~] **2.6** Crear `app/api/auth/api_login.py` — `POST /auth/login` (público):
  - Buscar usuario, verificar bcrypt. Mensaje **uniforme** en error (no diferenciar email-no-existe vs password-mala).
  - Revocar tokens previos del usuario, emitir nuevos.
  - 401: `INVALID_CREDENTIALS`.
