@@ -124,8 +124,8 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - `scikit-learn`, `pandas`, `numpy`
  - `sendgrid`, `httpx`
  - `python-multipart`
-- [~] **1.3** Crear `.env.example` con todas las variables del §2 técnico **+** `BIOMETRIC_KEY` (32 bytes base64) y `MAX_UPLOAD_SIZE_MB=2`. `JWT_SECRET_KEY` documentada con mínimo 32 chars.
-- [ ] **1.4** Crear `app/config.py` con `pydantic-settings` y validators al startup:
+- [x] **1.3** Crear `.env.example` con todas las variables del §2 técnico **+** `BIOMETRIC_KEY` (32 bytes base64) y `MAX_UPLOAD_SIZE_MB=2`. `JWT_SECRET_KEY` documentada con mínimo 32 chars.
+- [~] **1.4** Crear `app/config.py` con `pydantic-settings` y validators al startup:
  - `JWT_SECRET_KEY` longitud ≥ 32 → si no, `ValueError`.
  - `BIOMETRIC_KEY` decodificable base64 y exactamente 32 bytes → si no, `ValueError`.
 - [ ] **1.5** Crear `app/db/schema.sql` con DDL del §3.6 técnico (las 7 tablas, todas con `CREATE TABLE IF NOT EXISTS`).
