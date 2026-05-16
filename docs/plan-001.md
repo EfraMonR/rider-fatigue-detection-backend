@@ -136,8 +136,8 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Registrar router central + handler global de errores (5.16).
 - [x] **1.9** Crear `app/api/health.py` — `GET /health` → `{"status": "ok"}` (público).
 - [x] **1.10** Crear `Dockerfile` con usuario no-root y `HEALTHCHECK CMD curl -f http://localhost:8000/health || exit 1`.
-- [~] **1.11** Crear `docker-compose.yml` con volumen `./data:/app/data` y `restart: unless-stopped`.
-- [ ] **1.12** Verificar: `docker compose up` → `GET /health` devuelve 200, `data/segvial.db` con las 7 tablas.
+- [x] **1.11** Crear `docker-compose.yml` con volumen `./data:/app/data` y `restart: unless-stopped`.
+- [~] **1.12** Verificar: `docker compose up` → `GET /health` devuelve 200, `data/segvial.db` con las 7 tablas.
 
 
 ### Criterio de Done
