@@ -1,0 +1,944 @@
+{
+  "info": {
+    "name": "Rider Fatigue Detection API",
+    "description": "API REST para evaluación de fatiga del conductor.\n\n**Orden lógico para Collection Runner:**\n1. register\n2. login\n3. upload-file\n4. manual-input\n5. history/summary\n6. history/{id}\n7. history/stats (GET /history/summary con filtros)\n8. stats/trends\n9. stats/distribution\n10. stats/correlations\n11. user/profile\n12. calibrate\n13. tags GET\n14. tags POST\n15. tags DELETE\n16. contacts GET\n17. contacts POST\n18. contacts PUT\n19. contacts DELETE\n20. alerts/send\n\n**Pruebas IDOR:** usar la carpeta \"IDOR Tests\" — loguear con user2 e intentar leer sesiones de user1.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "{{base_url}}" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health — servidor operativo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\"status\": \"ok\"}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /auth/register — registro exitoso",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "  pm.environment.set('access_token', res.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"access_token\": \"<jwt>\",\n  \"token_type\": \"bearer\",\n  \"profile_status\": \"new\",\n  \"session_count\": 0\n}"
+            },
+            {
+              "name": "409 Email ya registrado",
+              "status": "Conflict",
+              "code": 409,
+              "body": "{\n  \"error_code\": \"EMAIL_ALREADY_EXISTS\",\n  \"message\": \"Este email ya está registrado.\"\n}"
+            },
+            {
+              "name": "400 Contraseña débil",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"error_code\": \"WEAK_PASSWORD\",\n  \"message\": \"La contraseña debe tener al menos 8 caracteres e incluir un carácter especial.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/login — login exitoso",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "  pm.environment.set('access_token', res.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"access_token\": \"<jwt>\",\n  \"token_type\": \"bearer\",\n  \"profile_status\": \"new\",\n  \"session_count\": 0\n}"
+            },
+            {
+              "name": "401 Credenciales inválidas",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{\n  \"error_code\": \"INVALID_CREDENTIALS\",\n  \"message\": \"Email o contraseña incorrectos.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/refresh — rotar tokens",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": { "mode": "none" },
+            "url": { "raw": "{{base_url}}/auth/refresh", "host": ["{{base_url}}"], "path": ["auth", "refresh"] },
+            "description": "Lee el refresh token desde la cookie HttpOnly. No requiere body."
+          },
+          "response": [
+            {
+              "name": "200 OK — nuevos tokens emitidos",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"access_token\": \"<nuevo_jwt>\",\n  \"token_type\": \"bearer\"\n}"
+            },
+            {
+              "name": "401 Refresh token inválido o expirado",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{\n  \"error_code\": \"REFRESH_TOKEN_INVALID\",\n  \"message\": \"Sesión expirada. Por favor, volvé a ingresar.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/logout — cerrar sesión",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": { "mode": "none" },
+            "url": { "raw": "{{base_url}}/auth/logout", "host": ["{{base_url}}"], "path": ["auth", "logout"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Sesión cerrada correctamente.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analysis",
+      "item": [
+        {
+          "name": "POST /analysis/upload-file — CSV simple",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.session_id) {",
+                  "  pm.environment.set('session_id', res.session_id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "docs/postman/samples/sample_simple.csv",
+                  "description": "CSV formato simple: columnas timestamp,bpm"
+                },
+                { "key": "lat", "value": "-34.61", "type": "text" },
+                { "key": "lon", "value": "-58.38", "type": "text" },
+                { "key": "tags", "value": "[\"Traffic\"]", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/analysis/upload-file", "host": ["{{base_url}}"], "path": ["analysis", "upload-file"] },
+            "description": "Subir CSV de muestra. El campo `file` es form-data tipo file. Se guarda `session_id` automáticamente en la variable de entorno."
+          },
+          "response": [
+            {
+              "name": "200 OK — análisis completado",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"session_id\": \"<uuid>\",\n  \"verdict\": \"Fit\",\n  \"stress_level\": \"Low\",\n  \"traffic_light\": \"Green\",\n  \"confidence_score\": 92,\n  \"risk_score\": 18.5,\n  \"weather_impact\": null\n}"
+            },
+            {
+              "name": "400 BPM fuera de rango",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"error_code\": \"INVALID_BPM_RANGE\",\n  \"message\": \"BPM fuera del rango [30, 220].\"\n}"
+            },
+            {
+              "name": "413 Archivo demasiado grande",
+              "status": "Payload Too Large",
+              "code": 413,
+              "body": "{\n  \"error_code\": \"FILE_TOO_LARGE\",\n  \"message\": \"Archivo excede el límite de procesamiento online. Procesar localmente en la app.\"\n}"
+            },
+            {
+              "name": "415 Tipo de archivo no soportado",
+              "status": "Unsupported Media Type",
+              "code": 415,
+              "body": "{\n  \"error_code\": \"UNSUPPORTED_MEDIA_TYPE\",\n  \"message\": \"Content-Type no permitido. Use text/csv o application/json.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST /analysis/upload-file — Apple Health CSV",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.session_id) {",
+                  "  pm.environment.set('session_id', res.session_id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "docs/postman/samples/sample_apple_health.csv",
+                  "description": "CSV formato Apple Health: columnas timestamp,type,value,unit,sourceName,sourceVersion"
+                },
+                { "key": "lat", "value": "-34.61", "type": "text" },
+                { "key": "lon", "value": "-58.38", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/analysis/upload-file", "host": ["{{base_url}}"], "path": ["analysis", "upload-file"] }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /analysis/manual-input — serie JSON",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.session_id) {",
+                  "  pm.environment.set('session_id', res.session_id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"series\": [\n    {\"timestamp\": \"2026-05-15T10:00:00Z\", \"bpm\": 72},\n    {\"timestamp\": \"2026-05-15T10:01:00Z\", \"bpm\": 75},\n    {\"timestamp\": \"2026-05-15T10:02:00Z\", \"bpm\": 78},\n    {\"timestamp\": \"2026-05-15T10:03:00Z\", \"bpm\": 80},\n    {\"timestamp\": \"2026-05-15T10:04:00Z\", \"bpm\": 77},\n    {\"timestamp\": \"2026-05-15T10:05:00Z\", \"bpm\": 74},\n    {\"timestamp\": \"2026-05-15T10:06:00Z\", \"bpm\": 76},\n    {\"timestamp\": \"2026-05-15T10:07:00Z\", \"bpm\": 73},\n    {\"timestamp\": \"2026-05-15T10:08:00Z\", \"bpm\": 79},\n    {\"timestamp\": \"2026-05-15T10:09:00Z\", \"bpm\": 82}\n  ]\n}"
+            },
+            "url": { "raw": "{{base_url}}/analysis/manual-input", "host": ["{{base_url}}"], "path": ["analysis", "manual-input"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"session_id\": \"<uuid>\",\n  \"verdict\": \"Fit\",\n  \"stress_level\": \"Low\",\n  \"traffic_light\": \"Green\",\n  \"confidence_score\": 88,\n  \"risk_score\": 12.0,\n  \"weather_impact\": null\n}"
+            },
+            {
+              "name": "400 BPM fuera de rango en serie",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"error_code\": \"INVALID_BPM_RANGE\",\n  \"message\": \"BPM fuera del rango [30, 220].\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "item": [
+        {
+          "name": "GET /history/summary — paginado",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/history/summary?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["history", "summary"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "tags", "value": "Rain,Traffic", "disabled": true },
+                { "key": "date_from", "value": "2026-05-01", "disabled": true },
+                { "key": "date_to", "value": "2026-05-15", "disabled": true }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"sessions\": [\n    {\n      \"id\": \"<uuid>\",\n      \"timestamp\": \"2026-05-15T10:09:00Z\",\n      \"verdict\": \"Fit\",\n      \"traffic_light\": \"Green\",\n      \"stress_level\": \"Low\",\n      \"tags\": [\"Traffic\"]\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"limit\": 10\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /history/{id} — detalle de sesión",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/history/{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["history", "{{session_id}}"],
+              "query": [
+                { "key": "raw_data", "value": "true", "disabled": true }
+              ]
+            },
+            "description": "Pasar `?raw_data=true` para descifrar y retornar datos biométricos crudos."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": \"<uuid>\",\n  \"timestamp\": \"2026-05-15T10:09:00Z\",\n  \"verdict\": \"Fit\",\n  \"stress_level\": \"Low\",\n  \"traffic_light\": \"Green\",\n  \"confidence_score\": 92,\n  \"risk_score\": 18.5,\n  \"weather_snapshot\": {},\n  \"weather_impact\": null,\n  \"tags\": []\n}"
+            },
+            {
+              "name": "404 Sesión no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"error_code\": \"SESSION_NOT_FOUND\",\n  \"message\": \"Sesión inexistente o pertenece a otro usuario.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "DELETE /history/{id} — eliminar sesión",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/history/{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["history", "{{session_id}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK — eliminada",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Sesión eliminada correctamente.\"\n}"
+            },
+            {
+              "name": "404 Sesión no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"error_code\": \"SESSION_NOT_FOUND\",\n  \"message\": \"Sesión inexistente o pertenece a otro usuario.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "item": [
+        {
+          "name": "GET /stats/trends?period=week",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/stats/trends?period=week",
+              "host": ["{{base_url}}"],
+              "path": ["stats", "trends"],
+              "query": [
+                { "key": "period", "value": "week" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"period\": \"week\",\n  \"trends\": [\n    {\"date\": \"2026-05-09\", \"avg_stress\": \"Low\"},\n    {\"date\": \"2026-05-10\", \"avg_stress\": \"Moderate\"}\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /stats/trends?period=month",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/stats/trends?period=month",
+              "host": ["{{base_url}}"],
+              "path": ["stats", "trends"],
+              "query": [
+                { "key": "period", "value": "month" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /stats/distribution",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/stats/distribution", "host": ["{{base_url}}"], "path": ["stats", "distribution"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"Green\": 60.0,\n  \"Yellow\": 30.0,\n  \"Red\": 10.0\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /stats/correlations",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/stats/correlations", "host": ["{{base_url}}"], "path": ["stats", "correlations"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"correlations\": [\n    {\"weather_condition\": \"Rain\", \"avg_stress_level\": \"Moderate\", \"count\": 5}\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "GET /user/profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/user/profile", "host": ["{{base_url}}"], "path": ["user", "profile"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"profile_status\": \"new\",\n  \"baseline_bpm\": 72,\n  \"session_count\": 3,\n  \"last_stability_check\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "PUT /user/profile/calibrate — BPM válido",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"baseline_bpm\": 68\n}"
+            },
+            "url": { "raw": "{{base_url}}/user/profile/calibrate", "host": ["{{base_url}}"], "path": ["user", "profile", "calibrate"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"baseline_bpm\": 68,\n  \"profile_status\": \"calibrating\"\n}"
+            },
+            {
+              "name": "400 BPM fuera de rango",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"error_code\": \"INVALID_BPM_RANGE\",\n  \"message\": \"BPM fuera del rango [30, 220].\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "PUT /user/profile/calibrate — BPM inválido (< 30)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"baseline_bpm\": 10\n}"
+            },
+            "url": { "raw": "{{base_url}}/user/profile/calibrate", "host": ["{{base_url}}"], "path": ["user", "profile", "calibrate"] }
+          },
+          "response": [
+            {
+              "name": "400 INVALID_BPM_RANGE",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"error_code\": \"INVALID_BPM_RANGE\",\n  \"message\": \"BPM fuera del rango [30, 220].\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /user/tags",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/user/tags", "host": ["{{base_url}}"], "path": ["user", "tags"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"tags\": [\n    {\"id\": \"<uuid>\", \"name\": \"Rain\"}\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST /user/tags — crear tag",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.id) {",
+                  "  pm.environment.set('tag_id', res.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"NightDrive\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/user/tags", "host": ["{{base_url}}"], "path": ["user", "tags"] }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": \"<uuid>\",\n  \"name\": \"NightDrive\"\n}"
+            },
+            {
+              "name": "409 Tag duplicado",
+              "status": "Conflict",
+              "code": 409,
+              "body": "{\n  \"error_code\": \"TAG_ALREADY_EXISTS\",\n  \"message\": \"Ya existe un tag con ese nombre.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "DELETE /user/tags/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user/tags/{{tag_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["user", "tags", "{{tag_id}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Tag eliminado correctamente.\"\n}"
+            },
+            {
+              "name": "404 Tag no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"error_code\": \"SESSION_NOT_FOUND\",\n  \"message\": \"Tag no encontrado.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /user/contacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/user/contacts", "host": ["{{base_url}}"], "path": ["user", "contacts"] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"contacts\": [\n    {\n      \"id\": \"<uuid>\",\n      \"name\": \"Juan Pérez\",\n      \"email\": \"juan@example.com\",\n      \"phone\": \"+5491112345678\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST /user/contacts — crear contacto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.id) {",
+                  "  pm.environment.set('contact_id', res.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"phone\": \"+5491112345678\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/user/contacts", "host": ["{{base_url}}"], "path": ["user", "contacts"] }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": \"<uuid>\",\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"phone\": \"+5491112345678\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "PUT /user/contacts/{id} — actualizar contacto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"email\": \"juan.updated@example.com\",\n  \"phone\": \"+5491199999999\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/contacts/{{contact_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["user", "contacts", "{{contact_id}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": \"<uuid>\",\n  \"name\": \"Juan Pérez Actualizado\",\n  \"email\": \"juan.updated@example.com\",\n  \"phone\": \"+5491199999999\"\n}"
+            },
+            {
+              "name": "404 Contacto no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"error_code\": \"SESSION_NOT_FOUND\",\n  \"message\": \"Contacto no encontrado.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "DELETE /user/contacts/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user/contacts/{{contact_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["user", "contacts", "{{contact_id}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Contacto eliminado correctamente.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Alerts",
+      "item": [
+        {
+          "name": "POST /alerts/send — todos los contactos",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{session_id}}\",\n  \"contact_ids\": []\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "url": { "raw": "{{base_url}}/alerts/send", "host": ["{{base_url}}"], "path": ["alerts", "send"] },
+            "description": "`contact_ids` vacío → notifica a todos los contactos del usuario."
+          },
+          "response": [
+            {
+              "name": "200 OK — alerta enviada",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Alerta enviada correctamente.\"\n}"
+            },
+            {
+              "name": "202 Accepted — encolada",
+              "status": "Accepted",
+              "code": 202,
+              "body": "{\n  \"message\": \"Alerta encolada para envío.\"\n}"
+            },
+            {
+              "name": "400 Sin contactos registrados",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"error_code\": \"NO_CONTACTS_FOUND\",\n  \"message\": \"El usuario no tiene contactos de confianza registrados.\"\n}"
+            },
+            {
+              "name": "503 Proveedor externo no disponible",
+              "status": "Service Unavailable",
+              "code": 503,
+              "body": "{\n  \"error_code\": \"ALERT_SERVICE_UNAVAILABLE\",\n  \"message\": \"El servicio de alertas no está disponible temporalmente.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST /alerts/send — contacto específico",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{session_id}}\",\n  \"contact_ids\": [\"{{contact_id}}\"]\n}"
+            },
+            "url": { "raw": "{{base_url}}/alerts/send", "host": ["{{base_url}}"], "path": ["alerts", "send"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "IDOR Tests",
+      "description": "Pruebas de IDOR (Insecure Direct Object Reference). Flujo:\n1. Registrar user2 con `user_email_2` / `user_password_2`.\n2. Login user2 → guarda `access_token` en la variable `access_token_user2`.\n3. Intentar leer `session_id` de user1 con el token de user2.\n4. Verificar que la respuesta es 404 SESSION_NOT_FOUND.",
+      "item": [
+        {
+          "name": "POST /auth/register — user2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "  pm.environment.set('access_token_user2', res.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email_2}}\",\n  \"password\": \"{{user_password_2}}\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /auth/login — user2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "  pm.environment.set('access_token_user2', res.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email_2}}\",\n  \"password\": \"{{user_password_2}}\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /history/{id} con token de user2 — debe devolver 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token_user2}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/history/{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["history", "{{session_id}}"]
+            },
+            "description": "`session_id` pertenece a user1. El token de user2 no debe tener acceso.\nRespuesta esperada: 404 SESSION_NOT_FOUND."
+          },
+          "response": [
+            {
+              "name": "404 SESSION_NOT_FOUND — IDOR protegido",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"error_code\": \"SESSION_NOT_FOUND\",\n  \"message\": \"Sesión inexistente o pertenece a otro usuario.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "DELETE /history/{id} con token de user2 — debe devolver 404",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token_user2}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/history/{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["history", "{{session_id}}"]
+            },
+            "description": "Intentar borrar sesión de user1 con token de user2. Respuesta esperada: 404."
+          },
+          "response": [
+            {
+              "name": "404 SESSION_NOT_FOUND — IDOR protegido",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"error_code\": \"SESSION_NOT_FOUND\",\n  \"message\": \"Sesión inexistente o pertenece a otro usuario.\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
