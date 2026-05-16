@@ -207,12 +207,12 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Limpiar cookie con `Max-Age=0` y mismas flags.
 
 
-- [~] **2.9** Crear `app/api/dependencies.py` — `get_current_user()`:
+- [x] **2.9** Crear `app/api/dependencies.py` — `get_current_user()`:
  - Extraer JWT de `Authorization: Bearer <token>`, decodificar, inyectar `user_id`.
  - 401: `TOKEN_EXPIRED` o `TOKEN_INVALID`.
 
 
-- [ ] **2.10** Crear `app/api/routes.py` (router central):
+- [~] **2.10** Crear `app/api/routes.py` (router central):
  - `protected_router = APIRouter(dependencies=[Depends(get_current_user)])` para todo.
  - `public_router = APIRouter()` solo para `health`, `auth.register`, `auth.login`.
  - El resto (refresh, logout, analysis, history, user, stats, alerts) va al protegido.
