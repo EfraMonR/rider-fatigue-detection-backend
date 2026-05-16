@@ -118,13 +118,13 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  ```
  app/ api/ services/ repositories/ models_ai/ db/ utils/
  ```
-- [~] **1.2** Crear `requirements.txt`:
+- [x] **1.2** Crear `requirements.txt`:
  - `fastapi`, `uvicorn[standard]`, `sqlalchemy`, `pydantic-settings`, `pydantic[email]`
  - `bcrypt`, `python-jose[cryptography]`, `cryptography` (AES-GCM)
  - `scikit-learn`, `pandas`, `numpy`
  - `sendgrid`, `httpx`
  - `python-multipart`
-- [ ] **1.3** Crear `.env.example` con todas las variables del §2 técnico **+** `BIOMETRIC_KEY` (32 bytes base64) y `MAX_UPLOAD_SIZE_MB=2`. `JWT_SECRET_KEY` documentada con mínimo 32 chars.
+- [~] **1.3** Crear `.env.example` con todas las variables del §2 técnico **+** `BIOMETRIC_KEY` (32 bytes base64) y `MAX_UPLOAD_SIZE_MB=2`. `JWT_SECRET_KEY` documentada con mínimo 32 chars.
 - [ ] **1.4** Crear `app/config.py` con `pydantic-settings` y validators al startup:
  - `JWT_SECRET_KEY` longitud ≥ 32 → si no, `ValueError`.
  - `BIOMETRIC_KEY` decodificable base64 y exactamente 32 bytes → si no, `ValueError`.
