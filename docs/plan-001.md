@@ -412,7 +412,7 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 5A — Historial (RF-003)
 
 
-- [ ] **5.1** Ampliar `session_repository.py` (todo filtra por `user_id`):
+- [x] **5.1** Ampliar `session_repository.py` (todo filtra por `user_id`):
  - `list_sessions(user_id, page, limit, tags, date_from, date_to)`.
    - Filtros dinámicos con `bindparams` siempre. Whitelist de columnas filtrables.
  - `get_session_detail(session_id, user_id, include_raw)`.
