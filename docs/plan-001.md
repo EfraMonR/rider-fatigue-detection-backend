@@ -384,12 +384,12 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  > - El código del servicio es el **mismo en ambos casos** — solo cambian variables de entorno.
 
 
-- [~] **4.6** Crear `app/api/alerts/api_send.py` — `POST /alerts/send` (protegido):
+- [x] **4.6** Crear `app/api/alerts/api_send.py` — `POST /alerts/send` (protegido):
  - Validar que `session_id` y cada `contact_id` pertenecen al `user_id` del token.
  - 400 `NO_CONTACTS_FOUND` · 503 `ALERT_SERVICE_UNAVAILABLE` · 202 si encolado.
 
 
-- [ ] **4.7** Crear `app/api/user/api_contacts.py` (protegidos, todos pasan `user_id` al repo):
+- [x] **4.7** Crear `app/api/user/api_contacts.py` (protegidos, todos pasan `user_id` al repo):
  - `GET /user/contacts` · `POST /user/contacts` (email validado con `EmailStr`) · `PUT /user/contacts/{id}` · `DELETE /user/contacts/{id}`.
 
 
