@@ -255,12 +255,12 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
 ### 3B — Modelo de IA (RF-001)
 
 
-- [~] **3.3** Crear `app/models_ai/model_loader.py`:
+- [x] **3.3** Crear `app/models_ai/model_loader.py`:
  - Cargar `modelo.pkl` desde `MODEL_PATH` una sola vez al arrancar.
  - Si no existe: log + `ModelNotAvailableError`.
 
 
-- [ ] **3.4** Crear `app/models_ai/inference_engine.py`:
+- [~] **3.4** Crear `app/models_ai/inference_engine.py`:
  - Input: `series: list[tuple[str, float]]`.
  - Features: `bpm_mean`, `bpm_std`, `bpm_p25`, `bpm_p75`, `bpm_max`.
  - Escalar con `KMEANS_SCALER_MEAN`/`STD` de `.env`.
