@@ -9,16 +9,8 @@ logger = get_logger(__name__)
 
 def _compute_features(series: list[dict]) -> np.ndarray:
     bpms = np.array([row["bpm"] for row in series], dtype=float)
-    features = np.array([
-        bpms.mean(),
-        bpms.std(),
-        np.percentile(bpms, 25),
-        np.percentile(bpms, 75),
-        bpms.max(),
-    ])
-    # Estandarizar con parámetros del scaler de entrenamiento
-    scaled = (features - settings.KMEANS_SCALER_MEAN) / settings.KMEANS_SCALER_STD
-    return scaled.reshape(1, -1)
+    # Pipeline(StandardScaler + KMeans) trained on 1D — pass raw [[bpm_mean]]
+    return np.array([[bpms.mean()]])
 
 
 def _cluster_to_stress(cluster_label: int, n_clusters: int) -> tuple[str, float]:
@@ -45,7 +37,7 @@ def run_inference(series: list[dict]) -> dict:
 
     try:
         cluster_label = int(model.predict(features)[0])
-        n_clusters = int(model.n_clusters)
+        n_clusters = int(model[-1].n_clusters)  # Pipeline: last step is KMeans
     except Exception as exc:
         logger.error("Inference failed: %s", type(exc).__name__)
         raise ModelNotAvailableError("Inference error") from exc

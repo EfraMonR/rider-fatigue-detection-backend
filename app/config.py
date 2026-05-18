@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     JWT_REFRESH_EXPIRE_DAYS: int = 7
 
     # Model
-    MODEL_PATH: str = "app/models_ai/modelo.pkl"
+    MODEL_PATH: str = "app/models_ai/pipeline_fatiga_1D_v1.pkl"
     KMEANS_SCALER_MEAN: float = 78.5
     KMEANS_SCALER_STD: float = 12.3
     DEFAULT_BASELINE_BPM: int = 72
