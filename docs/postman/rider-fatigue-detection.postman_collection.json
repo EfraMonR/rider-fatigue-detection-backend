@@ -5,7 +5,10 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "base_url", "value": "{{base_url}}" }
+    {
+      "key": "base_url",
+      "value": "{{base_url}}"
+    }
   ],
   "item": [
     {
@@ -16,7 +19,15 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] }
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
           },
           "response": [
             {
@@ -50,12 +61,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}"
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"name\": \"{{user_name}}\",\n  \"password\": \"{{user_password}}\"\n}"
             },
-            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] }
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
           },
           "response": [
             {
@@ -96,12 +121,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}"
             },
-            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
           },
           "response": [
             {
@@ -123,10 +162,24 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
-            "body": { "mode": "none" },
-            "url": { "raw": "{{base_url}}/auth/refresh", "host": ["{{base_url}}"], "path": ["auth", "refresh"] },
+            "body": {
+              "mode": "none"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
             "description": "Lee el refresh token desde la cookie HttpOnly. No requiere body."
           },
           "response": [
@@ -149,10 +202,24 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
-            "body": { "mode": "none" },
-            "url": { "raw": "{{base_url}}/auth/logout", "host": ["{{base_url}}"], "path": ["auth", "logout"] }
+            "body": {
+              "mode": "none"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
           },
           "response": [
             {
@@ -187,7 +254,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "body": {
               "mode": "formdata",
@@ -198,12 +268,33 @@
                   "src": "docs/postman/samples/sample_simple.csv",
                   "description": "CSV formato simple: columnas timestamp,bpm"
                 },
-                { "key": "lat", "value": "-34.61", "type": "text" },
-                { "key": "lon", "value": "-58.38", "type": "text" },
-                { "key": "tags", "value": "[\"Traffic\"]", "type": "text" }
+                {
+                  "key": "lat",
+                  "value": "-34.61",
+                  "type": "text"
+                },
+                {
+                  "key": "lon",
+                  "value": "-58.38",
+                  "type": "text"
+                },
+                {
+                  "key": "tags",
+                  "value": "[\"Traffic\"]",
+                  "type": "text"
+                }
               ]
             },
-            "url": { "raw": "{{base_url}}/analysis/upload-file", "host": ["{{base_url}}"], "path": ["analysis", "upload-file"] },
+            "url": {
+              "raw": "{{base_url}}/analysis/upload-file",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "analysis",
+                "upload-file"
+              ]
+            },
             "description": "Subir CSV de muestra. El campo `file` es form-data tipo file. Se guarda `session_id` automáticamente en la variable de entorno."
           },
           "response": [
@@ -252,7 +343,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "body": {
               "mode": "formdata",
@@ -263,11 +357,28 @@
                   "src": "docs/postman/samples/sample_apple_health.csv",
                   "description": "CSV formato Apple Health: columnas timestamp,type,value,unit,sourceName,sourceVersion"
                 },
-                { "key": "lat", "value": "-34.61", "type": "text" },
-                { "key": "lon", "value": "-58.38", "type": "text" }
+                {
+                  "key": "lat",
+                  "value": "-34.61",
+                  "type": "text"
+                },
+                {
+                  "key": "lon",
+                  "value": "-58.38",
+                  "type": "text"
+                }
               ]
             },
-            "url": { "raw": "{{base_url}}/analysis/upload-file", "host": ["{{base_url}}"], "path": ["analysis", "upload-file"] }
+            "url": {
+              "raw": "{{base_url}}/analysis/upload-file",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "analysis",
+                "upload-file"
+              ]
+            }
           },
           "response": []
         },
@@ -290,14 +401,29 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"series\": [\n    {\"timestamp\": \"2026-05-15T10:00:00Z\", \"bpm\": 72},\n    {\"timestamp\": \"2026-05-15T10:01:00Z\", \"bpm\": 75},\n    {\"timestamp\": \"2026-05-15T10:02:00Z\", \"bpm\": 78},\n    {\"timestamp\": \"2026-05-15T10:03:00Z\", \"bpm\": 80},\n    {\"timestamp\": \"2026-05-15T10:04:00Z\", \"bpm\": 77},\n    {\"timestamp\": \"2026-05-15T10:05:00Z\", \"bpm\": 74},\n    {\"timestamp\": \"2026-05-15T10:06:00Z\", \"bpm\": 76},\n    {\"timestamp\": \"2026-05-15T10:07:00Z\", \"bpm\": 73},\n    {\"timestamp\": \"2026-05-15T10:08:00Z\", \"bpm\": 79},\n    {\"timestamp\": \"2026-05-15T10:09:00Z\", \"bpm\": 82}\n  ]\n}"
             },
-            "url": { "raw": "{{base_url}}/analysis/manual-input", "host": ["{{base_url}}"], "path": ["analysis", "manual-input"] }
+            "url": {
+              "raw": "{{base_url}}/analysis/manual-input",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "analysis",
+                "manual-input"
+              ]
+            }
           },
           "response": [
             {
@@ -324,18 +450,44 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/history/summary?page=1&limit=10",
-              "host": ["{{base_url}}"],
-              "path": ["history", "summary"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "history",
+                "summary"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" },
-                { "key": "tags", "value": "Rain,Traffic", "disabled": true },
-                { "key": "date_from", "value": "2026-05-01", "disabled": true },
-                { "key": "date_to", "value": "2026-05-15", "disabled": true }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "tags",
+                  "value": "Rain,Traffic",
+                  "disabled": true
+                },
+                {
+                  "key": "date_from",
+                  "value": "2026-05-01",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-05-15",
+                  "disabled": true
+                }
               ]
             }
           },
@@ -353,14 +505,26 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/history/{{session_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["history", "{{session_id}}"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "history",
+                "{{session_id}}"
+              ],
               "query": [
-                { "key": "raw_data", "value": "true", "disabled": true }
+                {
+                  "key": "raw_data",
+                  "value": "true",
+                  "disabled": true
+                }
               ]
             },
             "description": "Pasar `?raw_data=true` para descifrar y retornar datos biométricos crudos."
@@ -385,12 +549,20 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/history/{{session_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["history", "{{session_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "history",
+                "{{session_id}}"
+              ]
             }
           },
           "response": [
@@ -418,14 +590,25 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/stats/trends?period=week",
-              "host": ["{{base_url}}"],
-              "path": ["stats", "trends"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "stats",
+                "trends"
+              ],
               "query": [
-                { "key": "period", "value": "week" }
+                {
+                  "key": "period",
+                  "value": "week"
+                }
               ]
             }
           },
@@ -443,14 +626,25 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/stats/trends?period=month",
-              "host": ["{{base_url}}"],
-              "path": ["stats", "trends"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "stats",
+                "trends"
+              ],
               "query": [
-                { "key": "period", "value": "month" }
+                {
+                  "key": "period",
+                  "value": "month"
+                }
               ]
             }
           },
@@ -461,9 +655,21 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
-            "url": { "raw": "{{base_url}}/stats/distribution", "host": ["{{base_url}}"], "path": ["stats", "distribution"] }
+            "url": {
+              "raw": "{{base_url}}/stats/distribution",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "stats",
+                "distribution"
+              ]
+            }
           },
           "response": [
             {
@@ -479,9 +685,21 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
-            "url": { "raw": "{{base_url}}/stats/correlations", "host": ["{{base_url}}"], "path": ["stats", "correlations"] }
+            "url": {
+              "raw": "{{base_url}}/stats/correlations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "stats",
+                "correlations"
+              ]
+            }
           },
           "response": [
             {
@@ -502,9 +720,21 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
-            "url": { "raw": "{{base_url}}/user/profile", "host": ["{{base_url}}"], "path": ["user", "profile"] }
+            "url": {
+              "raw": "{{base_url}}/user/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "profile"
+              ]
+            }
           },
           "response": [
             {
@@ -520,14 +750,30 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"baseline_bpm\": 68\n}"
             },
-            "url": { "raw": "{{base_url}}/user/profile/calibrate", "host": ["{{base_url}}"], "path": ["user", "profile", "calibrate"] }
+            "url": {
+              "raw": "{{base_url}}/user/profile/calibrate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "profile",
+                "calibrate"
+              ]
+            }
           },
           "response": [
             {
@@ -549,14 +795,30 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"baseline_bpm\": 10\n}"
             },
-            "url": { "raw": "{{base_url}}/user/profile/calibrate", "host": ["{{base_url}}"], "path": ["user", "profile", "calibrate"] }
+            "url": {
+              "raw": "{{base_url}}/user/profile/calibrate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "profile",
+                "calibrate"
+              ]
+            }
           },
           "response": [
             {
@@ -572,9 +834,21 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
-            "url": { "raw": "{{base_url}}/user/tags", "host": ["{{base_url}}"], "path": ["user", "tags"] }
+            "url": {
+              "raw": "{{base_url}}/user/tags",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "tags"
+              ]
+            }
           },
           "response": [
             {
@@ -604,14 +878,29 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"NightDrive\"\n}"
             },
-            "url": { "raw": "{{base_url}}/user/tags", "host": ["{{base_url}}"], "path": ["user", "tags"] }
+            "url": {
+              "raw": "{{base_url}}/user/tags",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "tags"
+              ]
+            }
           },
           "response": [
             {
@@ -633,12 +922,21 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/user/tags/{{tag_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["user", "tags", "{{tag_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "tags",
+                "{{tag_id}}"
+              ]
             }
           },
           "response": [
@@ -661,9 +959,21 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
-            "url": { "raw": "{{base_url}}/user/contacts", "host": ["{{base_url}}"], "path": ["user", "contacts"] }
+            "url": {
+              "raw": "{{base_url}}/user/contacts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "contacts"
+              ]
+            }
           },
           "response": [
             {
@@ -693,14 +1003,29 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"phone\": \"+5491112345678\"\n}"
             },
-            "url": { "raw": "{{base_url}}/user/contacts", "host": ["{{base_url}}"], "path": ["user", "contacts"] }
+            "url": {
+              "raw": "{{base_url}}/user/contacts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "contacts"
+              ]
+            }
           },
           "response": [
             {
@@ -716,8 +1041,14 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -725,8 +1056,14 @@
             },
             "url": {
               "raw": "{{base_url}}/user/contacts/{{contact_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["user", "contacts", "{{contact_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "contacts",
+                "{{contact_id}}"
+              ]
             }
           },
           "response": [
@@ -749,20 +1086,29 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/user/contacts/{{contact_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["user", "contacts", "{{contact_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "contacts",
+                "{{contact_id}}"
+              ]
             }
           },
           "response": [
             {
-              "name": "200 OK",
-              "status": "OK",
-              "code": 200,
-              "body": "{\n  \"message\": \"Contacto eliminado correctamente.\"\n}"
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
             }
           ]
         }
@@ -776,17 +1122,34 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"session_id\": \"{{session_id}}\",\n  \"contact_ids\": []\n}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
-            "url": { "raw": "{{base_url}}/alerts/send", "host": ["{{base_url}}"], "path": ["alerts", "send"] },
+            "url": {
+              "raw": "{{base_url}}/alerts/send",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alerts",
+                "send"
+              ]
+            },
             "description": "`contact_ids` vacío → notifica a todos los contactos del usuario."
           },
           "response": [
@@ -821,14 +1184,29 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"session_id\": \"{{session_id}}\",\n  \"contact_ids\": [\"{{contact_id}}\"]\n}"
             },
-            "url": { "raw": "{{base_url}}/alerts/send", "host": ["{{base_url}}"], "path": ["alerts", "send"] }
+            "url": {
+              "raw": "{{base_url}}/alerts/send",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alerts",
+                "send"
+              ]
+            }
           },
           "response": []
         }
@@ -856,12 +1234,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{user_email_2}}\",\n  \"password\": \"{{user_password_2}}\"\n}"
+              "raw": "{\n  \"email\": \"{{user_email_2}}\",\n  \"name\": \"{{user_name_2}}\",\n  \"password\": \"{{user_password_2}}\"\n}"
             },
-            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] }
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
           },
           "response": []
         },
@@ -883,12 +1275,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{user_email_2}}\",\n  \"password\": \"{{user_password_2}}\"\n}"
             },
-            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
           },
           "response": []
         },
@@ -897,12 +1303,20 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token_user2}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token_user2}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/history/{{session_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["history", "{{session_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "history",
+                "{{session_id}}"
+              ]
             },
             "description": "`session_id` pertenece a user1. El token de user2 no debe tener acceso.\nRespuesta esperada: 404 SESSION_NOT_FOUND."
           },
@@ -920,12 +1334,20 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{access_token_user2}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token_user2}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/history/{{session_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["history", "{{session_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "history",
+                "{{session_id}}"
+              ]
             },
             "description": "Intentar borrar sesión de user1 con token de user2. Respuesta esperada: 404."
           },
