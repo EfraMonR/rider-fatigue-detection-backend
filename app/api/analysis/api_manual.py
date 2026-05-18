@@ -34,6 +34,7 @@ class ManualInputIn(BaseModel):
     series: list[BpmPoint]
     lat: float | None = None
     lon: float | None = None
+    tags: list[str] | None = None
 
     @field_validator("lat")
     @classmethod
@@ -74,7 +75,7 @@ async def manual_input(
     series = [{"timestamp": p.timestamp, "bpm": p.bpm} for p in body.series]
 
     try:
-        result = await analysis_service.process(user_id=user_id, series=series, lat=body.lat, lon=body.lon)
+        result = await analysis_service.process(user_id=user_id, series=series, lat=body.lat, lon=body.lon, tags=body.tags)
     except ModelNotAvailableError:
         raise HTTPException(
             status_code=503,

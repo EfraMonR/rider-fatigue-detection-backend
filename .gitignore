@@ -219,4 +219,4 @@ __marimo__/
 
 # Project-specific
 data/segvial.db
-app/models_ai/*.pkl
+# El modelo .pkl se versiona en el repo (ver README — sección Modelo K-Means)

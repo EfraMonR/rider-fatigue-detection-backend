@@ -17,11 +17,11 @@ def create_session(user_id: str, result_dict: dict) -> str:
             text("""
                 INSERT INTO analysis_sessions
                     (id, user_id, verdict, stress_level, traffic_light,
-                     weather_snapshot, weather_impact, risk_score, confidence_score,
+                     weather_snapshot, weather_impact, bpm_mean, risk_score, confidence_score,
                      tags, processing_status)
                 VALUES
                     (:id, :user_id, :verdict, :stress_level, :traffic_light,
-                     :weather_snapshot, :weather_impact, :risk_score, :confidence_score,
+                     :weather_snapshot, :weather_impact, :bpm_mean, :risk_score, :confidence_score,
                      :tags, 'completed')
             """),
             {
@@ -32,6 +32,7 @@ def create_session(user_id: str, result_dict: dict) -> str:
                 "traffic_light": result_dict["traffic_light"],
                 "weather_snapshot": json.dumps(result_dict.get("weather_snapshot", {})),
                 "weather_impact": json.dumps(result_dict["weather_impact"]) if result_dict.get("weather_impact") else None,
+                "bpm_mean": result_dict.get("bpm_mean"),
                 "risk_score": result_dict.get("risk_score"),
                 "confidence_score": result_dict.get("confidence_score"),
                 "tags": json.dumps(result_dict.get("tags", [])),

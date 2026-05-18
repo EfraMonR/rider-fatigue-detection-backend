@@ -27,6 +27,11 @@ def get_history_detail(
             detail={"error_code": "SESSION_NOT_FOUND", "message": "Sesión no encontrada."},
         )
 
+    # H-3: normalizar confidence_score a int 0–100 (datos antiguos pueden ser float 0–1)
+    cs = result.get("confidence_score")
+    if cs is not None:
+        result["confidence_score"] = int(round(cs * 100)) if cs <= 1.0 else int(round(cs))
+
     for field in ("weather_snapshot", "weather_impact", "tags"):
         if isinstance(result.get(field), str):
             try:

@@ -2,6 +2,18 @@
 
 API REST para evaluación de fatiga del conductor. Procesa datos fisiológicos (BPM), clasifica el nivel de estrés con un modelo K-Means y emite alertas a contactos de confianza.
 
+## Repos del sistema
+
+| Componente | Repo | Rol |
+|---|---|---|
+| Backend (este repo) | [rider-fatigue-detection-backend](https://github.com/EfraMonR/rider-fatigue-detection-backend) | API REST, modelo K-Means, persistencia, alertas. |
+| Frontend | `rider-fatigue-detection-frontend` (a crear) | App Ionic/Angular mobile. Plan: [docs/plan-002.md](docs/plan-002.md). |
+
+El frontend consume esta API. Cuando se cree el repo del frontend, los siguientes archivos deben moverse allí:
+- `docs/spec-002-front-functional.md`
+- `docs/spec-002-front-technical.md`
+- `docs/plan-002.md`
+
 ## Stack
 
 | Capa | Tecnología |
@@ -183,6 +195,23 @@ Todos los errores siguen el formato:
 | 503 | `DATABASE_BUSY` | SQLite bloqueado |
 | 504 | `UPSTREAM_TIMEOUT` | API externa sin respuesta |
 | 507 | `STORAGE_FULL` | Disco lleno |
+
+## Modelo K-Means
+
+El archivo `app/models_ai/pipeline_fatiga_1D_v1.pkl` está versionado en el repositorio.
+Si el archivo está ausente (clon antiguo sin Git LFS u otro motivo), descargarlo desde los releases:
+
+```bash
+# Opción 1 — desde GitHub Releases (cuando esté publicado)
+gh release download --pattern "*.pkl" --dir app/models_ai/
+
+# Opción 2 — reentrenar localmente (requiere datos de entrenamiento)
+python scripts/train_model.py
+```
+
+La variable `MODEL_PATH` en `.env` debe apuntar al archivo descargado.
+Si el modelo no está disponible al iniciar, el sistema arranca en modo degradado
+y los endpoints `/analysis/*` devuelven `503 MODEL_NOT_AVAILABLE`.
 
 ## Backup de la base de datos
 

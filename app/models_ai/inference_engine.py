@@ -13,17 +13,29 @@ def _compute_features(series: list[dict]) -> np.ndarray:
     return np.array([[bpms.mean()]])
 
 
-def _cluster_to_stress(cluster_label: int, n_clusters: int) -> tuple[str, float]:
+_STRESS_LEVELS = ["Low", "Moderate", "High"]
+
+
+def _build_cluster_stress_map(model) -> dict[int, int]:
     """
-    Mapea cluster → stress_level y confidence_score.
-    Asume que el modelo devuelve etiquetas 0..n-1 ordenadas por BPM medio ascendente.
+    Devuelve {cluster_label: stress_index} ordenando clústeres por centroide ascendente.
+    KMeans no garantiza orden de etiquetas; este mapeo lo corrige en tiempo de inferencia.
     """
-    ratio = cluster_label / max(n_clusters - 1, 1)
+    kmeans = model[-1]
+    centers = kmeans.cluster_centers_  # shape (n_clusters, 1) en espacio escalado
+    sorted_labels = sorted(range(len(centers)), key=lambda i: centers[i][0])
+    return {label: stress_idx for stress_idx, label in enumerate(sorted_labels)}
+
+
+def _cluster_to_stress(stress_index: int, n_clusters: int) -> tuple[str, float]:
+    """Mapea stress_index ordenado → stress_level y confidence_score."""
+    ratio = stress_index / max(n_clusters - 1, 1)
+    level = _STRESS_LEVELS[min(stress_index, len(_STRESS_LEVELS) - 1)]
     if ratio < settings.STRESS_THRESHOLD_MODERATE:
-        return "Low", round(1.0 - ratio, 2)
+        return level, round(1.0 - ratio, 2)
     if ratio < settings.STRESS_THRESHOLD_HIGH:
-        return "Moderate", round(0.5 + (ratio - settings.STRESS_THRESHOLD_MODERATE) * 0.5, 2)
-    return "High", round(ratio, 2)
+        return level, round(0.5 + (ratio - settings.STRESS_THRESHOLD_MODERATE) * 0.5, 2)
+    return level, round(ratio, 2)
 
 
 def run_inference(series: list[dict]) -> dict:
@@ -38,11 +50,13 @@ def run_inference(series: list[dict]) -> dict:
     try:
         cluster_label = int(model.predict(features)[0])
         n_clusters = int(model[-1].n_clusters)  # Pipeline: last step is KMeans
+        cluster_map = _build_cluster_stress_map(model)
+        stress_index = cluster_map[cluster_label]
     except Exception as exc:
         logger.error("Inference failed: %s", type(exc).__name__)
         raise ModelNotAvailableError("Inference error") from exc
 
-    stress_level, confidence_score = _cluster_to_stress(cluster_label, n_clusters)
-    logger.info("Inference complete stress_level=%s", stress_level)
+    stress_level, confidence_score = _cluster_to_stress(stress_index, n_clusters)
+    logger.info("Inference complete stress_level=%s cluster=%d→stress_idx=%d", stress_level, cluster_label, stress_index)
 
     return {"stress_level": stress_level, "confidence_score": confidence_score}

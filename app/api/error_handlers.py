@@ -11,11 +11,22 @@ from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import OperationalError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.repositories.audit_repository import log_event
 from app.utils.logging import get_logger
 
 logger = get_logger(__name__)
+
+
+async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+    """Serializa HTTPException respetando el contrato {error_code, message} — RF-009."""
+    if isinstance(exc.detail, dict):
+        return JSONResponse(status_code=exc.status_code, content=exc.detail)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error_code": "HTTP_ERROR", "message": str(exc.detail)},
+    )
 
 
 async def file_not_found_handler(request: Request, exc: FileNotFoundError) -> JSONResponse:
@@ -95,6 +106,7 @@ async def generic_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 
 def register_handlers(app) -> None:
+    app.add_exception_handler(StarletteHTTPException, http_exception_handler)
     app.add_exception_handler(FileNotFoundError, file_not_found_handler)
     app.add_exception_handler(OperationalError, operational_error_handler)
     app.add_exception_handler(httpx.TimeoutException, upstream_timeout_handler)

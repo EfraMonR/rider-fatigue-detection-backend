@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS analysis_sessions (
     traffic_light     TEXT    NOT NULL CHECK (traffic_light IN ('Green', 'Yellow', 'Red')),
     weather_snapshot  TEXT    NOT NULL DEFAULT '{}',
     weather_impact    TEXT    DEFAULT NULL,
+    bpm_mean          REAL    DEFAULT NULL,
     risk_score        REAL    DEFAULT NULL,
     confidence_score  REAL    DEFAULT NULL,
     tags              TEXT    NOT NULL DEFAULT '[]',

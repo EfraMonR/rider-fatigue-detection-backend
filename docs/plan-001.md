@@ -266,6 +266,8 @@ Reglas transversales que aplican a todas las fases (no se repiten por tarea):
  - Escalar con `KMEANS_SCALER_MEAN`/`STD` de `.env`.
  - Output: `{"stress_level": "Low|Moderate|High", "confidence_score": 0.0–1.0}`.
 
+ > **BACKLOG — Mejora del modelo (v2):** El diseño original contemplaba 5 features (`bpm_mean`, `bpm_std`, `bpm_p25`, `bpm_p75`, `bpm_max`). El modelo en producción actual (`pipeline_fatiga_1D_v1.pkl`) es un `Pipeline(StandardScaler + KMeans)` entrenado únicamente con `bpm_mean` (1D), porque el paper académico fue redactado sobre esa base. El `inference_engine.py` fue ajustado para pasar `[[bpm_mean]]` directamente al pipeline. La migración a 5 features requiere reentrenar el modelo y actualizar `_compute_features` — el código está preparado para recibirlo sin cambios en la API.
+
 
 ### 3C — Repositorios y cifrado
 

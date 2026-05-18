@@ -78,8 +78,8 @@ def update_baseline_bpm(user_id: str, bpm: int) -> None:
 
 def recalculate_profile_status(user_id: str) -> str:
     """
-    Regla: new → calibrating en la 1ª sesión; calibrating → stable
-    cuando session_count >= 5 Y stddev(risk_score) < 10.
+    Regla (RF-007): new → calibrating en la 1ª sesión; calibrating → stable
+    cuando session_count >= 5 Y stddev(bpm_mean) < 10% del promedio en los últimos 7 días.
     Actualiza la fila y devuelve el nuevo status.
     """
     with get_connection() as conn:
@@ -98,17 +98,24 @@ def recalculate_profile_status(user_id: str) -> str:
         elif count < 5:
             new_status = "calibrating"
         else:
-            # SQLite no tiene STDDEV; calculamos en Python
-            scores = conn.execute(
-                text("SELECT risk_score FROM analysis_sessions WHERE user_id = :uid AND risk_score IS NOT NULL"),
+            # SQLite no tiene STDDEV; calculamos en Python sobre bpm_mean (últimos 7 días)
+            bpm_means = conn.execute(
+                text("""
+                    SELECT bpm_mean FROM analysis_sessions
+                    WHERE user_id = :uid
+                      AND bpm_mean IS NOT NULL
+                      AND timestamp >= datetime('now', '-7 days')
+                """),
                 {"uid": user_id},
             ).scalars().all()
 
-            if len(scores) >= 5:
-                mean = sum(scores) / len(scores)
-                variance = sum((s - mean) ** 2 for s in scores) / len(scores)
+            if len(bpm_means) >= 5:
+                mean = sum(bpm_means) / len(bpm_means)
+                variance = sum((b - mean) ** 2 for b in bpm_means) / len(bpm_means)
                 stddev = math.sqrt(variance)
-                new_status = "stable" if stddev < 10 else "calibrating"
+                # Criterio: desviación < 10% del BPM promedio
+                threshold = mean * 0.10
+                new_status = "stable" if stddev < threshold else "calibrating"
             else:
                 new_status = "calibrating"
 

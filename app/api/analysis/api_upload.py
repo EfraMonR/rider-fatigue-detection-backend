@@ -20,6 +20,7 @@ async def upload_file(
     file: UploadFile,
     lat: Annotated[float | None, Query(ge=-90, le=90)] = None,
     lon: Annotated[float | None, Query(ge=-180, le=180)] = None,
+    tags: Annotated[str | None, Query(description="Comma-separated tag names")] = None,
     current_user: dict = Depends(get_current_user),
 ):
     user_id = current_user["user_id"]
@@ -79,9 +80,11 @@ async def upload_file(
                     "message": "Archivo excede el límite de procesamiento online. Procesar localmente en la app."},
         )
 
+    tag_list = [t.strip() for t in tags.split(",")] if tags else None
+
     # 7) Análisis — sin BackgroundTasks
     try:
-        result = await analysis_service.process(user_id=user_id, series=series, lat=lat, lon=lon)
+        result = await analysis_service.process(user_id=user_id, series=series, lat=lat, lon=lon, tags=tag_list)
     except ModelNotAvailableError:
         raise HTTPException(
             status_code=503,
