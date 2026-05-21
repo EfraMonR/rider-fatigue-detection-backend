@@ -2,6 +2,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.db.database import engine
@@ -52,6 +53,20 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Seguridad Vial API", lifespan=lifespan)
+
+# ── CORS ──────────────────────────────────────────────────────────────────────
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:8100",       # ng serve (Ionic dev)
+        "http://localhost",            # Android WebView (Capacitor)
+        "capacitor://localhost",       # iOS WebView (Capacitor)
+        "https://api.segvial.app",     # producción
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ── Routes ───────────────────────────────────────────────────────────────────
 app.include_router(health_router)        # GET /health (público)

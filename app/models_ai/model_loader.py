@@ -1,4 +1,4 @@
-import pickle
+import joblib
 from pathlib import Path
 
 from app.config import settings
@@ -25,8 +25,7 @@ def load_model() -> object:
         raise ModelNotAvailableError("Model file not found")
 
     try:
-        with open(model_path, "rb") as f:
-            _model = pickle.load(f)
+        _model = joblib.load(model_path)
         logger.info("Model loaded successfully from MODEL_PATH")
     except Exception as exc:
         logger.error("Failed to load model: %s", type(exc).__name__)

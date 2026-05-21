@@ -20,11 +20,19 @@ def _compute_risk_score(stress_level: str, confidence_score: float) -> float:
     return round(base + confidence_score * (top - base), 1)
 
 
-def _determine_traffic_light(stress_level: str, bpm_mean: float, baseline_bpm: int) -> tuple[str, str]:
+_BPM_DANGER_CEILING = 170  # High-cluster center is 167.4 BPM; any max ≥ this overrides model
+
+
+def _determine_traffic_light(
+    stress_level: str, bpm_mean: float, bpm_max: float, baseline_bpm: int
+) -> tuple[str, str]:
     """
-    El traffic_light lo determina exclusivamente el clúster fisiológico.
-    baseline_bpm se usa post-inferencia para ajustar si el bpm_mean está muy por debajo del basal.
+    El traffic_light lo determina el clúster fisiológico + override de pico.
+    Si bpm_max ≥ 170 el promedio puede estar enmascarado por lecturas normales:
+    se fuerza Red/Unfit para evitar falsos negativos de seguridad.
     """
+    if bpm_max >= _BPM_DANGER_CEILING:
+        return "Red", "Unfit"
     if stress_level == "High":
         return "Red", "Unfit"
     if stress_level == "Moderate":
@@ -49,6 +57,7 @@ async def process(
     """
     bpms = [row["bpm"] for row in series]
     bpm_mean = sum(bpms) / len(bpms)
+    bpm_max = max(bpms)
     effective_baseline = baseline_bpm or settings.DEFAULT_BASELINE_BPM
 
     try:
@@ -60,7 +69,7 @@ async def process(
 
     stress_level = inference_result["stress_level"]
     confidence_score = inference_result["confidence_score"]
-    traffic_light, verdict = _determine_traffic_light(stress_level, bpm_mean, effective_baseline)
+    traffic_light, verdict = _determine_traffic_light(stress_level, bpm_mean, bpm_max, effective_baseline)
 
     # Weather enrichment — no modifica el semáforo, solo contextualiza
     weather_snapshot: dict = {}
@@ -75,6 +84,12 @@ async def process(
             weather_impact = weather_service.generate_weather_impact(weather_data)
         except Exception as exc:
             logger.error("Weather enrichment failed: %s", type(exc).__name__)
+    else:
+        # Sin coordenadas (GPS no disponible o permiso denegado) — se avisa al conductor
+        weather_impact = {
+            "severity": "info",
+            "message": "Activa el GPS para recibir alertas climáticas en tu ruta.",
+        }
 
     risk_score = _compute_risk_score(stress_level, confidence_score)
 
@@ -84,6 +99,7 @@ async def process(
         "traffic_light": traffic_light,
         "confidence_score": int(round(confidence_score * 100)),  # H-3: siempre int 0–100
         "bpm_mean": round(bpm_mean, 2),
+        "bpm_max": round(bpm_max, 2),
         "risk_score": risk_score,
         "weather_snapshot": weather_snapshot,
         "weather_impact": weather_impact,
