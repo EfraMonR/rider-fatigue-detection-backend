@@ -49,7 +49,9 @@ curl http://localhost:8000/health
 # → {"status": "ok"}
 ```
 
-La base de datos SQLite se crea automáticamente en `./data/segvial.db` al primer arranque.
+La base de datos SQLite se crea automáticamente en `./data/segvial.db` al primer arranque — no requiere ningún paso manual. El schema se inicializa desde `app/db/schema.sql` cada vez que el servidor inicia (las tablas usan `CREATE TABLE IF NOT EXISTS`, por lo que no se pierden datos en reinicios).
+
+> **Persistencia:** los datos sobreviven reinicios y reconstrucciones del contenedor porque `./data` está montado como volumen Docker. Solo se pierden si ejecutas `docker compose down -v`, que elimina los volúmenes explícitamente.
 
 ## Variables de entorno
 
@@ -133,6 +135,8 @@ Respuesta de análisis incluye: `verdict` (Fit/Unfit), `stress_level`, `traffic_
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | `POST` | `/alerts/send` | Enviar alerta por email a contactos de confianza vía SendGrid |
+
+> **Envío automático:** cuando el análisis devuelve `traffic_light: "Red"`, el backend envía automáticamente la alerta a todos los contactos registrados del usuario sin intervención del frontend.
 
 ## Formatos de entrada
 

@@ -950,7 +950,7 @@
               "name": "404 Tag no encontrado",
               "status": "Not Found",
               "code": 404,
-              "body": "{\n  \"error_code\": \"SESSION_NOT_FOUND\",\n  \"message\": \"Tag no encontrado.\"\n}"
+              "body": "{\n  \"error_code\": \"TAG_NOT_FOUND\",\n  \"message\": \"Tag no encontrado.\"\n}"
             }
           ]
         },
@@ -1077,7 +1077,7 @@
               "name": "404 Contacto no encontrado",
               "status": "Not Found",
               "code": 404,
-              "body": "{\n  \"error_code\": \"SESSION_NOT_FOUND\",\n  \"message\": \"Contacto no encontrado.\"\n}"
+              "body": "{\n  \"error_code\": \"CONTACT_NOT_FOUND\",\n  \"message\": \"Contacto no encontrado.\"\n}"
             }
           ]
         },
@@ -1157,13 +1157,7 @@
               "name": "200 OK — alerta enviada",
               "status": "OK",
               "code": 200,
-              "body": "{\n  \"message\": \"Alerta enviada correctamente.\"\n}"
-            },
-            {
-              "name": "202 Accepted — encolada",
-              "status": "Accepted",
-              "code": 202,
-              "body": "{\n  \"message\": \"Alerta encolada para envío.\"\n}"
+              "body": "{\n  \"sent\": [\"juan@example.com\"],\n  \"failed\": []\n}"
             },
             {
               "name": "400 Sin contactos registrados",

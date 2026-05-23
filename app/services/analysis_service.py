@@ -1,7 +1,7 @@
 from app.config import settings
 from app.models_ai import inference_engine
 from app.repositories import audit_repository, biometric_repository, session_repository, user_repository
-from app.services import weather_service
+from app.services import alerts_service, weather_service
 from app.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -113,6 +113,9 @@ async def process(
 
     _log_event(user_id, "upload", "Success")
     logger.info("Analysis complete session_id=%s stress=%s", session_id, stress_level)
+
+    if traffic_light == "Red":
+        await alerts_service.send_alert(user_id=user_id, session_id=session_id)
 
     result["session_id"] = session_id
     return result
