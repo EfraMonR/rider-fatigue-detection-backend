@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific
+data/segvial.db
+# El modelo .pkl se versiona en el repo (ver README — sección Modelo K-Means)

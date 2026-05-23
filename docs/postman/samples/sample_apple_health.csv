@@ -1,0 +1,15 @@
+timestamp,type,value,unit,sourceName,sourceVersion
+2026-05-15T10:00:00,HKQuantityTypeIdentifierHeartRate,72,count/min,Apple Watch,9.0
+2026-05-15T10:01:00,HKQuantityTypeIdentifierHeartRate,75,count/min,Apple Watch,9.0
+2026-05-15T10:02:00,HKQuantityTypeIdentifierHeartRate,78,count/min,Apple Watch,9.0
+2026-05-15T10:03:00,HKQuantityTypeIdentifierHeartRate,80,count/min,Apple Watch,9.0
+2026-05-15T10:04:00,HKQuantityTypeIdentifierHeartRate,77,count/min,Apple Watch,9.0
+2026-05-15T10:05:00,HKQuantityTypeIdentifierStepCount,1200,count,iPhone,17.0
+2026-05-15T10:06:00,HKQuantityTypeIdentifierHeartRate,74,count/min,Apple Watch,9.0
+2026-05-15T10:07:00,HKQuantityTypeIdentifierHeartRate,76,count/min,Apple Watch,9.0
+2026-05-15T10:08:00,HKQuantityTypeIdentifierHeartRate,73,count/min,Apple Watch,9.0
+2026-05-15T10:09:00,HKQuantityTypeIdentifierHeartRate,79,count/min,Apple Watch,9.0
+2026-05-15T10:10:00,HKQuantityTypeIdentifierHeartRate,82,count/min,Apple Watch,9.0
+2026-05-15T10:11:00,HKQuantityTypeIdentifierActiveEnergyBurned,45,kcal,Apple Watch,9.0
+2026-05-15T10:12:00,HKQuantityTypeIdentifierHeartRate,85,count/min,Apple Watch,9.0
+2026-05-15T10:13:00,HKQuantityTypeIdentifierHeartRate,81,count/min,Apple Watch,9.0
